@@ -1,0 +1,362 @@
+/* --- VARIABLES & TEMA OSCURO INSTITUCIONAL --- */
+:root {
+    --bg-body: #050505;
+    --bg-surface: #121212;
+    --bg-card: #1A1A1A;
+    --border-color: #333333;
+    
+    --brand-yellow: #FFC20E; /* Amarillo Duoc */
+    --brand-red: #CC0000;    /* Rojo Duoc */
+    --brand-white: #FFFFFF;
+    
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0A0A0;
+    
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --radius: 4px; 
+    --container-width: 1200px;
+    --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* --- RESET & BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+ul { list-style: none; }
+
+/* --- UTILIDADES --- */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- HEADER INSTITUCIONAL --- */
+header {
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.header-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ESTILO DEL LOGO */
+.logo {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.logo-duoc { color: var(--brand-yellow); } /* Amarillo */
+.logo-uc { color: var(--brand-white); }    /* Blanco */
+
+nav ul {
+    display: flex;
+    gap: 40px;
+}
+
+nav a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    position: relative;
+}
+
+nav a:hover, nav a.active {
+    color: var(--brand-yellow);
+}
+
+nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -24px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--brand-yellow);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--brand-yellow), #E6AC00);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-weight: bold;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    /* NUEVA IMAGEN DE FONDO: Arquitectura Institucional Oscura */
+    background-image: linear-gradient(to bottom, rgba(5,5,5,0.6), var(--bg-body)), url('https://picsum.photos/seed/arch_institutional/1920/800');
+    background-size: cover;
+    background-position: center;
+    padding: 100px 0;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto 40px;
+}
+
+/* --- MENU PRINCIPAL (GRID) --- */
+.main-menu {
+    padding: 80px 0;
+    background-color: var(--bg-body);
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.menu-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.menu-card:hover {
+    border-color: var(--brand-yellow);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 194, 14, 0.1);
+}
+
+.menu-card h3 {
+    margin-bottom: 10px;
+    color: white;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+}
+
+.menu-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.icon-lg {
+    font-size: 2rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    transition: color 0.3s;
+}
+
+.menu-card:hover .icon-lg {
+    color: var(--brand-yellow);
+}
+
+/* --- SECCIÓN DE RESERVAS --- */
+.reservations-section {
+    padding: 60px 0 100px;
+    background-color: var(--bg-body);
+    min-height: 80vh;
+}
+
+.reservations-container {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.reservation-form-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    height: fit-content;
+}
+
+.form-group { margin-bottom: 25px; }
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 12px;
+    background-color: #000;
+    border: 1px solid #333;
+    color: var(--brand-white);
+    border-radius: 2px;
+    font-family: inherit;
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--brand-yellow);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--brand-red);
+    color: white;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-submit:hover { background-color: #ff1a1a; }
+
+/* --- GRID DE LIBROS --- */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.book-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.book-card:hover { border-color: var(--text-secondary); }
+.book-card.selected {
+    border-color: var(--brand-yellow);
+    box-shadow: 0 0 10px rgba(255, 194, 14, 0.2);
+}
+
+.book-cover {
+    height: 200px;
+    background-color: #222;
+    position: relative;
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.book-card:hover .book-cover img { opacity: 1; }
+
+.book-info { padding: 20px; }
+
+.book-title {
+    font-weight: 700;
+    color: white;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.book-author {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.btn-select {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-select:hover {
+    border-color: var(--brand-yellow);
+    color: var(--brand-yellow);
+}
+
+.book-card.selected .btn-select {
+    background-color: var(--brand-yellow);
+    border-color: var(--brand-yellow);
+    color: black;
+    font-weight: bold;
+}
+
+/* --- FOOTER --- */
+footer {
+    background-color: black;
+    border-top: 1px solid var(--border-color);
+    padding: 40px 0;
+    text-align: center;
+    margin-top: auto;
+}
+footer p { color: #666; font-size: 0.8rem; }

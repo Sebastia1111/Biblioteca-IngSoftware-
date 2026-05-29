@@ -3,438 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca DuocUC | Intranet</title>
-    <style>
-        /* --- VARIABLES & TEMA OSCURO INSTITUCIONAL --- */
-        :root {
-            --bg-body: #050505;
-            --bg-surface: #121212;
-            --bg-card: #1A1A1A;
-            --border-color: #333333;
-            
-            --brand-yellow: #FFC20E; /* Amarillo Duoc */
-            --brand-red: #CC0000;    /* Rojo Duoc */
-            --brand-white: #FFFFFF;
-            
-            --text-primary: #FFFFFF;
-            --text-secondary: #A0A0A0;
-            
-            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
-            --radius: 4px; /* Bordes más cuadrados para estilo institucional */
-            --container-width: 1200px;
-            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
-
-        /* --- RESET & BASE --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-        ul { list-style: none; }
-
-        /* --- UTILIDADES --- */
-        .container {
-            max-width: var(--container-width);
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .hidden { display: none !important; }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- HEADER INSTITUCIONAL --- */
-        header {
-            background-color: var(--bg-surface);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            height: 70px;
-            display: flex;
-            align-items: center;
-        }
-
-        .header-content {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* ESTILO DEL LOGO SOLICITADO */
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .logo-duoc {
-            color: var(--brand-yellow); /* Amarillo */
-        }
-
-        .logo-uc {
-            color: var(--brand-white); /* Blanco (fondo negro) */
-        }
-
-        nav ul {
-            display: flex;
-            gap: 40px;
-        }
-
-        nav a {
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-            position: relative;
-        }
-
-        nav a:hover, nav a.active {
-            color: var(--brand-yellow);
-        }
-
-        nav a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -24px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--brand-yellow);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--brand-yellow), #E6AC00);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: black;
-            font-weight: bold;
-        }
-
-        /* --- HERO SECTION --- */
-        .hero {
-            background-image: linear-gradient(to bottom, rgba(5,5,5,0.3), var(--bg-body)), url('https://picsum.photos/seed/library_dark/1920/600');
-            background-size: cover;
-            background-position: center;
-            padding: 100px 0;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 40px;
-        }
-
-        /* --- MENU PRINCIPAL --- */
-        .main-menu {
-            padding: 80px 0;
-            background-color: var(--bg-body);
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .menu-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .menu-card:hover {
-            border-color: var(--brand-yellow);
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 194, 14, 0.1);
-        }
-
-        .menu-card h3 {
-            margin-bottom: 10px;
-            color: white;
-            text-transform: uppercase;
-            font-size: 1.1rem;
-        }
-
-        .menu-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .icon-lg {
-            font-size: 2rem;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            transition: color 0.3s;
-        }
-
-        .menu-card:hover .icon-lg {
-            color: var(--brand-yellow);
-        }
-
-        /* --- SECCIÓN DE RESERVAS --- */
-        .reservations-section {
-            padding: 60px 0 100px;
-            background-color: var(--bg-body);
-            min-height: 80vh;
-        }
-
-        .reservations-container {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 40px;
-            margin-top: 40px;
-        }
-
-        /* Formulario Dark */
-        .reservation-form-card {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            height: fit-content;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            background-color: #000;
-            border: 1px solid #333;
-            color: var(--brand-white);
-            border-radius: 2px;
-            font-family: inherit;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--brand-yellow);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--brand-red);
-            color: white;
-            border: none;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-submit:hover {
-            background-color: #ff1a1a;
-        }
-
-        /* Grid de Libros Dark */
-        .books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-        }
-
-        .book-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .book-card:hover {
-            border-color: var(--text-secondary);
-        }
-
-        .book-card.selected {
-            border-color: var(--brand-yellow);
-            box-shadow: 0 0 10px rgba(255, 194, 14, 0.2);
-        }
-
-        .book-cover {
-            height: 200px;
-            background-color: #222;
-            position: relative;
-        }
-
-        .book-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-
-        .book-card:hover .book-cover img {
-            opacity: 1;
-        }
-
-        .book-info {
-            padding: 20px;
-        }
-
-        .book-title {
-            font-weight: 700;
-            color: white;
-            margin-bottom: 5px;
-            font-size: 1rem;
-        }
-
-        .book-author {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-
-        .btn-select {
-            width: 100%;
-            padding: 10px;
-            background: transparent;
-            border: 1px solid var(--text-secondary);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-select:hover {
-            border-color: var(--brand-yellow);
-            color: var(--brand-yellow);
-        }
-
-        .book-card.selected .btn-select {
-            background-color: var(--brand-yellow);
-            border-color: var(--brand-yellow);
-            color: black;
-            font-weight: bold;
-        }
-
-        /* --- TOAST --- */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: var(--bg-surface);
-            border-left: 4px solid var(--brand-yellow);
-            color: white;
-            padding: 20px 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: translateX(200%);
-            transition: transform 0.4s ease-out;
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            background-color: black;
-            border-top: 1px solid var(--border-color);
-            padding: 40px 0;
-            text-align: center;
-            margin-top: auto;
-        }
-
-        footer p {
-            color: #666;
-            font-size: 0.8rem;
-        }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 900px) {
-            .reservations-container {
-                grid-template-columns: 1fr;
-            }
-            .hero h1 { font-size: 2rem; }
-        }
-    </style>
+    <title>Biblioteca DuocUC | Inicio</title>
+    <!-- Vinculamos el archivo CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <!-- Header -->
     <header>
         <div class="container header-content">
-            <!-- LOGO ESTILO INSTITUCIONAL: Duoc Amarillo / UC Blanco -->
-            <div class="logo" onclick="switchTab('home')">
+            <!-- Logo navega al inicio -->
+            <div class="logo" onclick="window.location.href='index.html'">
                 <span class="logo-duoc">Duoc</span><span class="logo-uc">UC</span>
             </div>
 
             <nav>
                 <ul>
-                    <li><a onclick="switchTab('home')" class="nav-link active" id="nav-home">Inicio</a></li>
-                    <li><a onclick="switchTab('reservations')" class="nav-link" id="nav-reservations">Reservas</a></li>
+                    <!-- Enlaces a las distintas rutas -->
+                    <li><a href="index.html" class="active">Inicio</a></li>
+                    <li><a href="reservas.html">Reservas</a></li>
                     <li><a href="#">Catálogo</a></li>
                 </ul>
             </nav>
@@ -446,12 +33,12 @@
         </div>
     </header>
 
-    <!-- VISTA INICIO -->
-    <main id="view-home" class="fade-in">
+    <!-- Contenido Principal -->
+    <main class="fade-in">
         <section class="hero">
             <div class="container">
                 <h1>Sistema Bibliotecario</h1>
-                <p>Acceso institucional a recursos académicos y gestión de préstamos.</p>
+                <p>Plataforma institucional para la gestión de recursos académicos y préstamos.</p>
             </div>
         </section>
 
@@ -460,28 +47,28 @@
                 <div class="menu-grid">
                     
                     <!-- Botón Catálogo -->
-                    <div class="menu-card" onclick="showToast('Accediendo al catálogo general...')">
+                    <div class="menu-card" onclick="window.location.href='#'">
                         <div class="icon-lg">🔍</div>
                         <h3>Buscar</h3>
                         <p>Consultar disponibilidad de material</p>
                     </div>
 
-                    <!-- BOTÓN RESERVAS (Destacado por funcionalidad) -->
-                    <div class="menu-card" onclick="switchTab('reservations')">
+                    <!-- BOTÓN RESERVAS: Enlace directo a reservas.html -->
+                    <div class="menu-card" onclick="window.location.href='reservas.html'">
                         <div class="icon-lg">📚</div>
                         <h3 style="color: var(--brand-yellow);">Reservar Libros</h3>
                         <p>Gestionar préstamos de bibliografía</p>
                     </div>
 
                     <!-- Botón Salas -->
-                    <div class="menu-card" onclick="showToast('Módulo de salas deshabilitado')">
+                    <div class="menu-card" onclick="alert('Función en desarrollo')">
                         <div class="icon-lg">🏢</div>
                         <h3>Sala de Estudio</h3>
                         <p>Reserva de espacios físicos</p>
                     </div>
 
                     <!-- Botón Estado -->
-                    <div class="menu-card" onclick="showToast('Consultando historial...')">
+                    <div class="menu-card" onclick="alert('Función en desarrollo')">
                         <div class="icon-lg">📋</div>
                         <h3>Mi Estado</h3>
                         <p>Historial y multas</p>
@@ -492,208 +79,11 @@
         </section>
     </main>
 
-    <!-- VISTA RESERVAS -->
-    <main id="view-reservations" class="hidden fade-in">
-        <section class="reservations-section">
-            <div class="container">
-                <h2 style="text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 20px;">Nueva Reserva</h2>
-                
-                <div class="reservations-container">
-                    <!-- Formulario Lateral -->
-                    <div class="reservation-form-card">
-                        <h4 style="color: white; margin-bottom: 20px; text-transform: uppercase;">Datos del Solicitante</h4>
-                        <form id="form-reserva">
-                            <div class="form-group">
-                                <label>RUT</label>
-                                <input type="text" id="rut" placeholder="12.345.678-9" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Carrera</label>
-                                <select id="carrera">
-                                    <option value="" disabled selected>-- SELECCIONAR --</option>
-                                    <option value="inf">Ingeniería en Informática</option>
-                                    <option value="adi">Administración</option>
-                                    <option value="con">Construcción</option>
-                                    <option value="des">Diseño</option>
-                                    <option value="tur">Turismo</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Sede</label>
-                                <select id="sede">
-                                    <option value="sj">Sede San Joaquín</option>
-                                    <option value="vp">Sede Viña del Mar</option>
-                                    <option value="al">Sede Antonio Varas</option>
-                                    <option value="pn">Sede Plaza Norte</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Ejemplar Seleccionado</label>
-                                <input type="text" id="book-selected" placeholder="Ningún libro seleccionado" readonly style="color: #666; cursor: default;">
-                            </div>
-
-                            <button type="submit" class="btn-submit">Confirmar Reserva</button>
-                        </form>
-                    </div>
-
-                    <!-- Grid de Libros Disponibles -->
-                    <div>
-                        <h4 style="color: #666; margin-bottom: 15px; text-transform: uppercase; font-size: 0.9rem;">Disponibilidad Inmediata</h4>
-                        <div class="books-grid">
-                            
-                            <!-- Libro 1 -->
-                            <div class="book-card" onclick="selectBook(this, 'Física Universitaria Vol.1')">
-                                <div class="book-cover">
-                                    <img src="https://picsum.photos/seed/fisica/300/400" alt="Libro">
-                                </div>
-                                <div class="book-info">
-                                    <div class="book-title">Física Universitaria</div>
-                                    <div class="book-author">Sears & Zemansky</div>
-                                    <button class="btn-select">Seleccionar</button>
-                                </div>
-                            </div>
-
-                            <!-- Libro 2 -->
-                            <div class="book-card" onclick="selectBook(this, 'Análisis Matemático')">
-                                <div class="book-cover">
-                                    <img src="https://picsum.photos/seed/math/300/400" alt="Libro">
-                                </div>
-                                <div class="book-info">
-                                    <div class="book-title">Análisis Matemático</div>
-                                    <div class="book-author">Tom Apostol</div>
-                                    <button class="btn-select">Seleccionar</button>
-                                </div>
-                            </div>
-
-                            <!-- Libro 3 -->
-                            <div class="book-card" onclick="selectBook(this, 'Marketing Estratégico')">
-                                <div class="book-cover">
-                                    <img src="https://picsum.photos/seed/market/300/400" alt="Libro">
-                                </div>
-                                <div class="book-info">
-                                    <div class="book-title">Marketing Estratégico</div>
-                                    <div class="book-author">Philip Kotler</div>
-                                    <button class="btn-select">Seleccionar</button>
-                                </div>
-                            </div>
-
-                             <!-- Libro 4 -->
-                             <div class="book-card" onclick="selectBook(this, 'Derecho Civil')">
-                                <div class="book-cover">
-                                    <img src="https://picsum.photos/seed/legal/300/400" alt="Libro">
-                                </div>
-                                <div class="book-info">
-                                    <div class="book-title">Derecho Civil</div>
-                                    <div class="book-author">Arturo Alessandri</div>
-                                    <button class="btn-select">Seleccionar</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
     <footer>
         <div class="container">
             <p>&copy; 2023 DuocUC - Corporación de Desarrollo Social</p>
-            <p>Uso exclusivo para fines académicos institucionales.</p>
         </div>
     </footer>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <span style="font-size: 1.2rem;">ⓘ</span>
-        <span id="toast-msg">Mensaje del sistema</span>
-    </div>
-
-    <script>
-        // Lógica de navegación por pestañas
-        function switchTab(tabName) {
-            const home = document.getElementById('view-home');
-            const reservations = document.getElementById('view-reservations');
-            const navHome = document.getElementById('nav-home');
-            const navRes = document.getElementById('nav-reservations');
-
-            window.scrollTo(0,0);
-
-            if(tabName === 'reservations') {
-                home.classList.add('hidden');
-                reservations.classList.remove('hidden');
-                navRes.classList.add('active');
-                navHome.classList.remove('active');
-            } else {
-                reservations.classList.add('hidden');
-                home.classList.remove('hidden');
-                navHome.classList.add('active');
-                navRes.classList.remove('active');
-            }
-        }
-
-        // Lógica de selección de libros
-        function selectBook(cardElement, bookTitle) {
-            // Limpiar selección previa
-            document.querySelectorAll('.book-card').forEach(card => {
-                card.classList.remove('selected');
-                const btn = card.querySelector('.btn-select');
-                btn.innerText = "SELECCIONAR";
-            });
-
-            // Marcar nueva selección
-            cardElement.classList.add('selected');
-            cardElement.querySelector('.btn-select').innerText = "SELECCIONADO";
-
-            // Llenar input
-            const input = document.getElementById('book-selected');
-            input.value = bookTitle;
-            input.style.color = "var(--brand-yellow)";
-            input.style.borderColor = "var(--brand-yellow)";
-        }
-
-        // Manejo del formulario
-        document.getElementById('form-reserva').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const book = document.getElementById('book-selected').value;
-            const carrera = document.getElementById('carrera').value;
-
-            if (!book) {
-                showToast("Seleccione un libro de la lista.", true);
-                return;
-            }
-            if (!carrera) {
-                showToast("Seleccione su carrera.", true);
-                return;
-            }
-
-            showToast(`Reserva confirmada exitosamente.`);
-            
-            // Reset visual
-            this.reset();
-            document.getElementById('book-selected').value = "";
-            document.getElementById('book-selected').style.color = "#666";
-            document.querySelectorAll('.book-card').forEach(c => {
-                c.classList.remove('selected');
-                c.querySelector('.btn-select').innerText = "SELECCIONAR";
-            });
-        });
-
-        // Notificaciones
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toast-msg');
-            
-            toastMsg.innerText = msg;
-            toast.style.borderLeftColor = isError ? 'var(--brand-red)' : 'var(--brand-yellow)';
-            
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-    </script>
 </body>
 </html>

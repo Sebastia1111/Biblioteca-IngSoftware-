@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca DuocUC | Reservas</title>
+    <!-- Usamos el mismo CSS para mantener la consistencia -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <span class="logo-duoc">Duoc</span><span class="logo-uc">UC</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <!-- Enlace activo cambia a Reservas -->
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="reservas.html" class="active">Reservas</a></li>
+                    <li><a href="#">Catálogo</a></li>
+                </ul>
+            </nav>
+
+            <div class="user-profile">
+                <span>ESTUDIANTE</span>
+                <div class="avatar">EP</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="reservations-section fade-in">
+        <div class="container">
+            <h2 style="text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 20px;">Nueva Reserva</h2>
+            
+            <div class="reservations-container">
+                <!-- Formulario Lateral -->
+                <div class="reservation-form-card">
+                    <h4 style="color: white; margin-bottom: 20px; text-transform: uppercase;">Datos del Solicitante</h4>
+                    <form id="form-reserva">
+                        <div class="form-group">
+                            <label>RUT</label>
+                            <input type="text" id="rut" placeholder="12.345.678-9" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Carrera</label>
+                            <select id="carrera">
+                                <option value="" disabled selected>-- SELECCIONAR --</option>
+                                <option value="inf">Ingeniería en Informática</option>
+                                <option value="adi">Administración</option>
+                                <option value="con">Construcción</option>
+                                <option value="des">Diseño</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sede</label>
+                            <select id="sede">
+                                <option value="sj">Sede San Joaquín</option>
+                                <option value="vp">Sede Viña del Mar</option>
+                                <option value="al">Sede Antonio Varas</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Ejemplar Seleccionado</label>
+                            <input type="text" id="book-selected" placeholder="Ningún libro seleccionado" readonly style="color: #666; cursor: default;">
+                        </div>
+
+                        <button type="submit" class="btn-submit">Confirmar Reserva</button>
+                    </form>
+                </div>
+
+                <!-- Grid de Libros Disponibles -->
+                <div>
+                    <h4 style="color: #666; margin-bottom: 15px; text-transform: uppercase; font-size: 0.9rem;">Disponibilidad Inmediata</h4>
+                    <div class="books-grid">
+                        
+                        <!-- Libro 1 -->
+                        <div class="book-card" onclick="selectBook(this, 'Física Universitaria Vol.1')">
+                            <div class="book-cover">
+                                <img src="https://picsum.photos/seed/fisica/300/400" alt="Libro">
+                            </div>
+                            <div class="book-info">
+                                <div class="book-title">Física Universitaria</div>
+                                <div class="book-author">Sears & Zemansky</div>
+                                <button class="btn-select">Seleccionar</button>
+                            </div>
+                        </div>
+
+                        <!-- Libro 2 -->
+                        <div class="book-card" onclick="selectBook(this, 'Análisis Matemático')">
+                            <div class="book-cover">
+                                <img src="https://picsum.photos/seed/math/300/400" alt="Libro">
+                            </div>
+                            <div class="book-info">
+                                <div class="book-title">Análisis Matemático</div>
+                                <div class="book-author">Tom Apostol</div>
+                                <button class="btn-select">Seleccionar</button>
+                            </div>
+                        </div>
+
+                        <!-- Libro 3 -->
+                        <div class="book-card" onclick="selectBook(this, 'Marketing Estratégico')">
+                            <div class="book-cover">
+                                <img src="https://picsum.photos/seed/market/300/400" alt="Libro">
+                            </div>
+                            <div class="book-info">
+                                <div class="book-title">Marketing Estratégico</div>
+                                <div class="book-author">Philip Kotler</div>
+                                <button class="btn-select">Seleccionar</button>
+                            </div>
+                        </div>
+
+                         <!-- Libro 4 -->
+                         <div class="book-card" onclick="selectBook(this, 'Derecho Civil')">
+                            <div class="book-cover">
+                                <img src="https://picsum.photos/seed/legal/300/400" alt="Libro">
+                            </div>
+                            <div class="book-info">
+                                <div class="book-title">Derecho Civil</div>
+                                <div class="book-author">Arturo Alessandri</div>
+                                <button class="btn-select">Seleccionar</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 DuocUC - Corporación de Desarrollo Social</p>
+        </div>
+    </footer>
+
+    <!-- Script exclusivo para esta página -->
+    <script>
+        function selectBook(cardElement, bookTitle) {
+            // Limpiar selección previa
+            document.querySelectorAll('.book-card').forEach(card => {
+                card.classList.remove('selected');
+                const btn = card.querySelector('.btn-select');
+                btn.innerText = "SELECCIONAR";
+            });
+
+            // Marcar nueva selección
+            cardElement.classList.add('selected');
+            cardElement.querySelector('.btn-select').innerText = "SELECCIONADO";
+
+            // Llenar input
+            const input = document.getElementById('book-selected');
+            input.value = bookTitle;
+            input.style.color = "var(--brand-yellow)";
+            input.style.borderColor = "var(--brand-yellow)";
+        }
+
+        document.getElementById('form-reserva').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("Reserva confirmada en el sistema.");
+            this.reset();
+        });
+    </script>
+
+</body>
+</html>
