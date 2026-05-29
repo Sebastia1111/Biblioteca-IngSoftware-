@@ -37,21 +37,28 @@
     <main class="fade-in">
         <section class="hero">
             <div class="container">
+                <!-- Título -->
                 <h1>Sistema Bibliotecario</h1>
-                <p>Plataforma institucional para la gestión de recursos académicos y préstamos.</p>
+
+                <!-- Subtítulo -->
+                <p style="margin-bottom: 30px; opacity: 0.8;">Accede al catálogo completo de recursos académicos.</p>
+
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Buscar por título, autor o ISBN...">
+                    <button class="search-btn">
+                        <!-- Icono de Lupa SVG -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </section>
 
         <section class="main-menu">
             <div class="container">
                 <div class="menu-grid">
-                    
-                    <!-- Botón Catálogo -->
-                    <div class="menu-card" onclick="window.location.href='#'">
-                        <div class="icon-lg">🔍</div>
-                        <h3>Buscar</h3>
-                        <p>Consultar disponibilidad de material</p>
-                    </div>
 
                     <!-- BOTÓN RESERVAS: Enlace directo a reservas.html -->
                     <div class="menu-card" onclick="window.location.href='reservas.html'">
@@ -81,9 +88,35 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 DuocUC - Corporación de Desarrollo Social</p>
+            <p>&copy; 2026 DuocUC - Institución ....</p>
         </div>
     </footer>
+    <!-- AGREGA ESTO AL FINAL DE index.html -->
+    <script>
+        const searchBtn = document.querySelector('.search-btn');
+        const searchInput = document.querySelector('.search-input');
 
+        // Función al hacer clic en la lupa
+        searchBtn.addEventListener('click', () => {
+            realizarBusqueda();
+        });
+
+        // Función al presionar ENTER en el teclado
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                realizarBusqueda();
+            }
+        });
+
+        function realizarBusqueda() {
+            const termino = searchInput.value.trim();
+            if (termino) {
+                // Redirige a reservas.html pasando el texto en la URL
+                window.location.href = `reservas.html?busqueda=${encodeURIComponent(termino)}`;
+            } else {
+                alert("Por favor escribe algo para buscar.");
+            }
+        }
+    </script>
 </body>
 </html>

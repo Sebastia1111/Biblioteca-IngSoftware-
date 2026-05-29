@@ -136,7 +136,7 @@ nav a.active::after {
 /* --- HERO SECTION --- */
 .hero {
     /* NUEVA IMAGEN DE FONDO: Arquitectura Institucional Oscura */
-    background-image: linear-gradient(to bottom, rgba(5,5,5,0.6), var(--bg-body)), url('https://picsum.photos/seed/arch_institutional/1920/800');
+    background-image: linear-gradient(to bottom, rgba(5,5,5,0.6), var(--bg-body)), url('https://strauss.cl/wp-content/uploads/2019/10/duocweb2.jpg');
     background-size: cover;
     background-position: center;
     padding: 100px 0;
@@ -360,3 +360,64 @@ footer {
     margin-top: auto;
 }
 footer p { color: #666; font-size: 0.8rem; }
+
+/* --- ESTILOS DE LA BARRA DE BÚSQUEDA --- */
+.search-container {
+    max-width: 600px;
+    margin: 30px auto 0; /* Centrado y separado del título */
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 18px 25px;
+    padding-right: 60px; /* Espacio para el botón */
+    background-color: rgba(255, 255, 255, 0.05); /* Fondo semitransparente */
+    border: 1px solid var(--border-color);
+    border-radius: 4px; /* Bordes ligeramente cuadrados (institucional) */
+    color: white;
+    font-size: 1.1rem;
+    font-family: var(--font-main);
+    outline: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px); /* Efecto cristal */
+}
+
+.search-input::placeholder {
+    color: #888;
+}
+
+.search-input:focus {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-color: var(--brand-yellow);
+    box-shadow: 0 0 15px rgba(255, 194, 14, 0.2);
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+    width: 50px;
+    background-color: var(--brand-yellow);
+    border: none;
+    border-radius: 2px;
+    color: black;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.search-btn:hover {
+    background-color: #fff;
+}
+
+.search-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 3;
+}

@@ -51,19 +51,20 @@
                             <label>Carrera</label>
                             <select id="carrera">
                                 <option value="" disabled selected>-- SELECCIONAR --</option>
-                                <option value="inf">Ingeniería en Informática</option>
-                                <option value="adi">Administración</option>
-                                <option value="con">Construcción</option>
-                                <option value="des">Diseño</option>
+                                <option value="pro">Analista Programador</option>
+                                <option value="adm">Técnico en Administración</option>
+                                <option value="enf">Técnico en Enfermería</option>
+                                <option value="ele">Técnico en Electricidad y Automatización Industrial</option>
+                                <option value="log">Técnico en Gestión Logística</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label>Sede</label>
                             <select id="sede">
-                                <option value="sj">Sede San Joaquín</option>
-                                <option value="vp">Sede Viña del Mar</option>
-                                <option value="al">Sede Antonio Varas</option>
+                                <option value="na">Sede Nacimiento</option>
+                                <option value="vm">Sede Viña del Mar</option>
+                                <option value="co">Sede Concepción</option>
                             </select>
                         </div>
 
@@ -79,56 +80,10 @@
                 <!-- Grid de Libros Disponibles -->
                 <div>
                     <h4 style="color: #666; margin-bottom: 15px; text-transform: uppercase; font-size: 0.9rem;">Disponibilidad Inmediata</h4>
-                    <div class="books-grid">
-                        
-                        <!-- Libro 1 -->
-                        <div class="book-card" onclick="selectBook(this, 'Física Universitaria Vol.1')">
-                            <div class="book-cover">
-                                <img src="https://picsum.photos/seed/fisica/300/400" alt="Libro">
-                            </div>
-                            <div class="book-info">
-                                <div class="book-title">Física Universitaria</div>
-                                <div class="book-author">Sears & Zemansky</div>
-                                <button class="btn-select">Seleccionar</button>
-                            </div>
-                        </div>
-
-                        <!-- Libro 2 -->
-                        <div class="book-card" onclick="selectBook(this, 'Análisis Matemático')">
-                            <div class="book-cover">
-                                <img src="https://picsum.photos/seed/math/300/400" alt="Libro">
-                            </div>
-                            <div class="book-info">
-                                <div class="book-title">Análisis Matemático</div>
-                                <div class="book-author">Tom Apostol</div>
-                                <button class="btn-select">Seleccionar</button>
-                            </div>
-                        </div>
-
-                        <!-- Libro 3 -->
-                        <div class="book-card" onclick="selectBook(this, 'Marketing Estratégico')">
-                            <div class="book-cover">
-                                <img src="https://picsum.photos/seed/market/300/400" alt="Libro">
-                            </div>
-                            <div class="book-info">
-                                <div class="book-title">Marketing Estratégico</div>
-                                <div class="book-author">Philip Kotler</div>
-                                <button class="btn-select">Seleccionar</button>
-                            </div>
-                        </div>
-
-                         <!-- Libro 4 -->
-                         <div class="book-card" onclick="selectBook(this, 'Derecho Civil')">
-                            <div class="book-cover">
-                                <img src="https://picsum.photos/seed/legal/300/400" alt="Libro">
-                            </div>
-                            <div class="book-info">
-                                <div class="book-title">Derecho Civil</div>
-                                <div class="book-author">Arturo Alessandri</div>
-                                <button class="btn-select">Seleccionar</button>
-                            </div>
-                        </div>
-
+                    
+                    <!-- IMPORTANTE: Agregué id="books-grid" aquí -->
+                    <div class="books-grid" id="books-grid">
+                        <!-- Los libros se generarán aquí automáticamente con JS -->
                     </div>
                 </div>
             </div>
@@ -137,37 +92,138 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 DuocUC - Corporación de Desarrollo Social</p>
+            <p>&copy; 2026 DuocUC - Corporación de Desarrollo Social</p>
         </div>
     </footer>
 
-    <!-- Script exclusivo para esta página -->
+    <!-- UN SOLO SCRIPT LIMPIO Y COMPLETO -->
     <script>
+        // 1. BASE DE DATOS DE LIBROS
+        const libros = [
+            {
+                id: 1,
+                titulo: "Física Universitaria",
+                autor: "Sears & Zemansky",
+                img: "https://picsum.photos/seed/fisica/300/400"
+            },
+            {
+                id: 2,
+                titulo: "Análisis Matemático",
+                autor: "Tom Apostol",
+                img: "https://picsum.photos/seed/math/300/400"
+            },
+            {
+                id: 3,
+                titulo: "Marketing Estratégico",
+                autor: "Philip Kotler",
+                img: "https://picsum.photos/seed/market/300/400"
+            },
+            {
+                id: 4,
+                titulo: "Derecho Civil",
+                autor: "Arturo Alessandri",
+                img: "https://picsum.photos/seed/legal/300/400"
+            },
+            {
+                id: 5,
+                titulo: "Programación en Python",
+                autor: "Guido Van Rossum",
+                img: "https://picsum.photos/seed/python/300/400"
+            },
+            {
+                id: 6,
+                titulo: "Historia del Arte",
+                autor: "Gombrich",
+                img: "https://picsum.photos/seed/art/300/400"
+            }
+        ];
+        
+        // 2. FUNCIÓN PARA BÚSQUEDA INTELIGENTE
+        function normalizarTexto(texto) {
+            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+    
+        // 3. FUNCIÓN QUE CREA EL HTML DE CADA LIBRO
+        function crearCardLibro(libro) {
+            return `
+                <div class="book-card" onclick="selectBook(this, '${libro.titulo}')">
+                    <div class="book-cover">
+                        <img src="${libro.img}" alt="${libro.titulo}">
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">${libro.titulo}</div>
+                        <div class="book-author">${libro.autor}</div>
+                        <div class="book-action">
+                            <button class="btn-select">Seleccionar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    
+        // 4. LÓGICA PRINCIPAL AL CARGAR LA PÁGINA
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('books-grid'); // Ahora sí encuentra el elemento gracias al ID
+            
+            const parametrosURL = new URLSearchParams(window.location.search);
+            const busqueda = parametrosURL.get('busqueda');
+        
+            let librosAMostrar = libros;
+        
+            // Si hay una búsqueda en la URL, filtramos
+            if (busqueda) {
+                const terminoNormalizado = normalizarTexto(busqueda);
+                librosAMostrar = libros.filter(libro => {
+                    const tituloNormalizado = normalizarTexto(libro.titulo);
+                    const autorNormalizado = normalizarTexto(libro.autor);
+                    return tituloNormalizado.includes(terminoNormalizado) || 
+                           autorNormalizado.includes(terminoNormalizado);
+                });
+            }
+        
+            // Mostrar resultados
+            if (librosAMostrar.length > 0) {
+                grid.innerHTML = librosAMostrar.map(libro => crearCardLibro(libro)).join('');
+                
+                if (busqueda) {
+                    const tituloSeccion = document.querySelector('h2');
+                    tituloSeccion.innerText = `Resultados para: "${busqueda}" (${librosAMostrar.length})`;
+                }
+            } else {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                        <h3 style="color: white; margin-bottom: 10px;">No se encontraron resultados</h3>
+                        <p>Intenta buscando por "Física", "Python" o "Arte".</p>
+                        <br>
+                        <a href="reservas.html" style="color: var(--brand-yellow);">Ver todos los libros</a>
+                    </div>
+                `;
+            }
+        });
+    
+        // 5. FUNCIÓN DE SELECCIÓN (Definida una sola vez)
         function selectBook(cardElement, bookTitle) {
-            // Limpiar selección previa
             document.querySelectorAll('.book-card').forEach(card => {
                 card.classList.remove('selected');
                 const btn = card.querySelector('.btn-select');
                 btn.innerText = "SELECCIONAR";
             });
-
-            // Marcar nueva selección
+        
             cardElement.classList.add('selected');
             cardElement.querySelector('.btn-select').innerText = "SELECCIONADO";
-
-            // Llenar input
+        
             const input = document.getElementById('book-selected');
             input.value = bookTitle;
             input.style.color = "var(--brand-yellow)";
             input.style.borderColor = "var(--brand-yellow)";
         }
-
+    
+        // 6. MANEJO DEL FORMULARIO (Definido una sola vez)
         document.getElementById('form-reserva').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert("Reserva confirmada en el sistema.");
+            alert("Reserva enviada al sistema.");
             this.reset();
         });
     </script>
-
 </body>
 </html>
