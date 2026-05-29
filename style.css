@@ -79,7 +79,6 @@ header {
     font-weight: 900;
     letter-spacing: -0.5px;
     cursor: pointer;
-    text-transform: uppercase;
 }
 
 .logo-duoc { color: var(--brand-yellow); } /* Amarillo */
@@ -420,4 +419,11 @@ footer p { color: #666; font-size: 0.8rem; }
     width: 20px;
     height: 20px;
     stroke-width: 3;
+}
+
+/* Icono del calendario visible en modo oscuro */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Invierte el color: el gris se vuelve blanco */
+    cursor: pointer;
+    background-color: transparent;
 }

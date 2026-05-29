@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca DuocUC | Salas de Estudio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <span class="logo-duoc">Duoc</span><span class="logo-uc">UC</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="reservas.html">Reservas</a></li>
+                    <li><a href="salas.html" class="active">Salas</a></li>
+                </ul>
+            </nav>
+
+            <div class="user-profile">
+                <span>ESTUDIANTE</span>
+                <div class="avatar">EP</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="reservations-section fade-in">
+        <div class="container">
+            <h2 style="text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 20px;">Reserva de Salas</h2>
+            
+            <div class="reservations-container">
+                <!-- Formulario Lateral -->
+                <div class="reservation-form-card">
+                    <h4 style="color: white; margin-bottom: 20px; text-transform: uppercase;">Datos de la Reserva</h4>
+                    <form id="form-sala">
+                        <div class="form-group">
+                            <label>RUT</label>
+                            <input type="text" id="rut" placeholder="12.345.678-9" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" id="fecha" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Horario (Bloques de 50 min)</label>
+                            <select id="horario">
+                                <option value="" disabled selected>-- SELECCIONAR BLOQUE --</option>
+                                <option value="09:00 - 09:50">09:00 - 09:50</option>
+                                <option value="10:00 - 10:50">10:00 - 10:50</option>
+                                <option value="11:00 - 11:50">11:00 - 11:50</option>
+                                <option value="12:00 - 12:50">12:00 - 12:50</option>
+                                <option value="13:00 - 13:50">13:00 - 13:50</option>
+                                <option value="14:00 - 14:50">14:00 - 14:50</option>
+                                <option value="15:00 - 15:50">15:00 - 15:50</option>
+                                <option value="16:00 - 16:50">16:00 - 16:50</option>
+                                <option value="17:00 - 17:50">17:00 - 17:50</option>
+                                <option value="18:00 - 18:50">18:00 - 18:50</option>
+                                <option value="19:00 - 19:50">19:00 - 19:50</option>
+                                <option value="20:00 - 20:50">20:00 - 20:50</option>
+                                <option value="21:00 - 21:50">21:00 - 21:50</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sala Seleccionada</label>
+                            <input type="text" id="room-selected" placeholder="Ninguna sala seleccionada" readonly style="color: #666; cursor: default;">
+                        </div>
+
+                        <button type="submit" class="btn-submit">Confirmar Reserva</button>
+                    </form>
+                </div>
+
+                <!-- Grid de Salas -->
+                <div>
+                    <h4 style="color: #666; margin-bottom: 15px; text-transform: uppercase; font-size: 0.9rem;">Disponibilidad (Capacidad: 4 pers.)</h4>
+                    <div class="books-grid" id="rooms-grid">
+                        <!-- Las salas se generarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 DuocUC - Corporación de Desarrollo Social</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. BASE DE DATOS DE SALAS
+        const salas = [
+            { id: 1, nombre: "Sala de Estudio N°1", detalle: "Capacidad: 4 Personas" },
+            { id: 2, nombre: "Sala de Estudio N°2", detalle: "Capacidad: 4 Personas" },
+            { id: 3, nombre: "Sala de Estudio N°3", detalle: "Capacidad: 4 Personas" },
+            { id: 4, nombre: "Sala de Estudio N°4", detalle: "Capacidad: 4 Personas" }
+        ];
+            
+        // 2. FUNCIÓN QUE CREA EL HTML DE CADA SALA
+        function crearCardSala(sala) {
+            return `
+                <div class="book-card" onclick="selectRoom(this, '${sala.nombre}')" style="justify-content: center; align-items: center; text-align: center; padding: 20px;">
+                    <div class="book-info">
+                        <div class="book-title" style="font-size: 1.3rem; margin-bottom: 5px;">${sala.nombre}</div>
+                        <div class="book-author" style="margin-bottom: 15px;">${sala.detalle}</div>
+                        <div class="book-action">
+                            <button class="btn-select">Seleccionar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 3. LÓGICA AL CARGAR LA PÁGINA
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('rooms-grid');
+            grid.innerHTML = salas.map(sala => crearCardSala(sala)).join('');
+        
+            // --- NUEVA LÓGICA DE FECHA MÍNIMA ---
+            const fechaInput = document.getElementById('fecha');
+            const hoy = new Date();
+            
+            // Formatear fecha a YYYY-MM-DD (que es lo que entiende el input type="date")
+            const yyyy = hoy.getFullYear();
+            const mm = String(hoy.getMonth() + 1).padStart(2, '0'); // Enero es 0, le sumamos 1
+            const dd = String(hoy.getDate()).padStart(2, '0');
+            
+            const fechaHoy = `${yyyy}-${mm}-${dd}`;
+            
+            // Bloquear fechas anteriores a hoy
+            fechaInput.min = fechaHoy;
+            // -------------------------------------
+        });
+        
+        // 4. FUNCIÓN DE SELECCIÓN
+        function selectRoom(cardElement, roomName) {
+            document.querySelectorAll('.book-card').forEach(card => {
+                card.classList.remove('selected');
+                const btn = card.querySelector('.btn-select');
+                btn.innerText = "SELECCIONAR";
+            });
+        
+            cardElement.classList.add('selected');
+            cardElement.querySelector('.btn-select').innerText = "SELECCIONADO";
+        
+            const input = document.getElementById('room-selected');
+            input.value = roomName;
+            input.style.color = "var(--brand-yellow)";
+            input.style.borderColor = "var(--brand-yellow)";
+        }
+        
+        // 5. MANEJO DEL FORMULARIO
+        document.getElementById('form-sala').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const horario = document.getElementById('horario').value;
+            const sala = document.getElementById('room-selected').value;
+        
+            if(!horario) {
+                alert("Por favor selecciona un bloque horario.");
+                return;
+            }
+            if(!sala) {
+                alert("Por favor selecciona una sala.");
+                return;
+            }
+        
+            alert(`Reserva confirmada:\nSala: ${sala}\nHorario: ${horario}\n\nRecuerda que el bloque dura 50 minutos.`);
+            this.reset();
+        });
+    </script>
+
+</body>
+</html>
