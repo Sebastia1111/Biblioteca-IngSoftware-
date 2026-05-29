@@ -37,6 +37,17 @@
         <div class="container">
             <h2 style="text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 20px;">Nueva Reserva</h2>
             
+            <div class="search-container" style="margin-bottom: 30px;">
+                <input type="text" id="filtro-local" class="search-input" placeholder="Filtrar por título, autor o ISBN...">
+                <button class="search-btn" id="btn-filtrar">
+                    <!-- Icono de Lupa SVG -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+
             <div class="reservations-container">
                 <!-- Formulario Lateral -->
                 <div class="reservation-form-card">
@@ -96,7 +107,6 @@
         </div>
     </footer>
 
-    <!-- UN SOLO SCRIPT LIMPIO Y COMPLETO -->
     <script>
         // 1. BASE DE DATOS DE LIBROS
         const libros = [
@@ -142,8 +152,8 @@
         function normalizarTexto(texto) {
             return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         }
-    
-        // 3. FUNCIÓN QUE CREA EL HTML DE CADA LIBRO
+
+        // 3. FUNCIÓN QUE CREA EL HTML
         function crearCardLibro(libro) {
             return `
                 <div class="book-card" onclick="selectBook(this, '${libro.titulo}')">
@@ -160,48 +170,80 @@
                 </div>
             `;
         }
-    
-        // 4. LÓGICA PRINCIPAL AL CARGAR LA PÁGINA
-        document.addEventListener('DOMContentLoaded', () => {
-            const grid = document.getElementById('books-grid'); // Ahora sí encuentra el elemento gracias al ID
-            
-            const parametrosURL = new URLSearchParams(window.location.search);
-            const busqueda = parametrosURL.get('busqueda');
-        
-            let librosAMostrar = libros;
-        
-            // Si hay una búsqueda en la URL, filtramos
-            if (busqueda) {
-                const terminoNormalizado = normalizarTexto(busqueda);
-                librosAMostrar = libros.filter(libro => {
+
+        // 4. FUNCIÓN CENTRAL DE FILTRADO (Se usa para URL y para el Input local)
+        function aplicarFiltro(terminoBusqueda) {
+            const grid = document.getElementById('books-grid');
+            const tituloSeccion = document.querySelector('h2');
+
+            let librosFiltrados = libros;
+
+            if (terminoBusqueda) {
+                const terminoNormalizado = normalizarTexto(terminoBusqueda);
+                librosFiltrados = libros.filter(libro => {
                     const tituloNormalizado = normalizarTexto(libro.titulo);
                     const autorNormalizado = normalizarTexto(libro.autor);
                     return tituloNormalizado.includes(terminoNormalizado) || 
                            autorNormalizado.includes(terminoNormalizado);
                 });
             }
-        
-            // Mostrar resultados
-            if (librosAMostrar.length > 0) {
-                grid.innerHTML = librosAMostrar.map(libro => crearCardLibro(libro)).join('');
-                
-                if (busqueda) {
-                    const tituloSeccion = document.querySelector('h2');
-                    tituloSeccion.innerText = `Resultados para: "${busqueda}" (${librosAMostrar.length})`;
+
+            // Renderizar
+            if (librosFiltrados.length > 0) {
+                grid.innerHTML = librosFiltrados.map(libro => crearCardLibro(libro)).join('');
+
+                // Cambiar título según contexto
+                if (terminoBusqueda) {
+                    tituloSeccion.innerText = `Resultados para: "${terminoBusqueda}" (${librosFiltrados.length})`;
+                } else {
+                    tituloSeccion.innerText = "Nueva Reserva";
                 }
             } else {
                 grid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
                         <h3 style="color: white; margin-bottom: 10px;">No se encontraron resultados</h3>
-                        <p>Intenta buscando por "Física", "Python" o "Arte".</p>
+                        <p>Intenta con otro término.</p>
                         <br>
                         <a href="reservas.html" style="color: var(--brand-yellow);">Ver todos los libros</a>
                     </div>
                 `;
+                tituloSeccion.innerText = `Sin resultados para: "${terminoBusqueda}"`;
             }
+        }
+
+        // 5. EVENTOS AL CARGAR PÁGINA
+        document.addEventListener('DOMContentLoaded', () => {
+            // A. Verificar si viene desde Index con búsqueda en URL
+            const parametrosURL = new URLSearchParams(window.location.search);
+            const busquedaURL = parametrosURL.get('busqueda');
+
+            if (busquedaURL) {
+                // Si vino de Index, llenamos el input local y filtramos
+                document.getElementById('filtro-local').value = busquedaURL;
+                aplicarFiltro(busquedaURL);
+            } else {
+                // Si entró directo, mostramos todo
+                aplicarFiltro("");
+            }
+
+            // B. Eventos del Buscador Local (Nueva funcionalidad)
+            const inputLocal = document.getElementById('filtro-local');
+            const btnFiltrar = document.getElementById('btn-filtrar');
+
+            // Click en la lupa
+            btnFiltrar.addEventListener('click', () => {
+                aplicarFiltro(inputLocal.value);
+            });
+
+            // Presionar Enter
+            inputLocal.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    aplicarFiltro(inputLocal.value);
+                }
+            });
         });
-    
-        // 5. FUNCIÓN DE SELECCIÓN (Definida una sola vez)
+
+        // 6. FUNCIÓN DE SELECCIÓN
         function selectBook(cardElement, bookTitle) {
             document.querySelectorAll('.book-card').forEach(card => {
                 card.classList.remove('selected');
@@ -217,12 +259,15 @@
             input.style.color = "var(--brand-yellow)";
             input.style.borderColor = "var(--brand-yellow)";
         }
-    
-        // 6. MANEJO DEL FORMULARIO (Definido una sola vez)
+
+        // 7. MANEJO DEL FORMULARIO
         document.getElementById('form-reserva').addEventListener('submit', function(e) {
             e.preventDefault();
             alert("Reserva enviada al sistema.");
             this.reset();
+            // Opcional: Limpiar filtro después de reservar
+            // aplicarFiltro("");
+            // document.getElementById('filtro-local').value = "";
         });
     </script>
 </body>
