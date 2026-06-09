@@ -2,121 +2,67 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca DuocUC | Inicio</title>
-    <!-- Vinculamos el archivo CSS -->
+    <title>Portal Biblioteca DuocUC</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Header -->
     <header>
-        <div class="container header-content">
-            <!-- Logo navega al inicio -->
-            <div class="logo" onclick="window.location.href='index.html'">
-                <span class="logo-duoc">Duoc</span><span class="logo-uc">UC</span>
-            </div>
-
-            <nav>
-                <ul>
-                    <!-- Enlaces a las distintas rutas -->
-                    <li><a href="index.html" class="active">Inicio</a></li>
-                    <li><a href="reservas.html">Reservas</a></li>
-                    <li><a href="#">Catálogo</a></li>
-                </ul>
-            </nav>
-
-            <div class="user-profile">
-                <span>ESTUDIANTE</span>
-                <div class="avatar">EP</div>
-            </div>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <span>Biblioteca</span><span>DuocUC</span>
         </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li><a href="catalogo.html">Inventario</a></li>
+                <li><a href="reservas.html">Reservar</a></li>
+                <li><a href="mis_prestamos.html">Mis Préstamos</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <!-- Contenido Principal -->
-    <main class="fade-in">
-        <section class="hero">
-            <div class="container">
-                <!-- Título -->
-                <h1>Sistema Bibliotecario</h1>
-
-                <!-- Subtítulo -->
-                <p style="margin-bottom: 30px; opacity: 0.8;">Accede al catálogo completo de recursos académicos.</p>
-
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Buscar por título, autor o ISBN...">
-                    <button class="search-btn">
-                        <!-- Icono de Lupa SVG -->
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </button>
-                </div>
+    <div class="container">
+        <h2>Bienvenido al Portal</h2>
+        <div class="dashboard-grid">
+            
+            <!-- Tendencias (Antes Top 5) -->
+            <div class="card">
+                <h3>Tendencias de Lectura</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Materiales más solicitados esta semana.</p>
+                <ul id="top-list"></ul>
             </div>
-        </section>
 
-        <section class="main-menu">
-            <div class="container">
-                <div class="menu-grid">
-
-                    <!-- BOTÓN RESERVAS: Enlace directo a reservas.html -->
-                    <div class="menu-card" onclick="window.location.href='reservas.html'">
-                        <div class="icon-lg">📚</div>
-                        <h3 style="color: var(--brand-yellow);">Reservar Libros</h3>
-                        <p>Gestionar préstamos de bibliografía</p>
-                    </div>
-
-                    <!-- Botón Salas -->
-                    <div class="menu-card" onclick="window.location.href='salas.html'">
-                        <div class="icon-lg">🏢</div>
-                        <h3>Sala de Estudio</h3>
-                        <p>Reserva de espacios físicos</p>
-                    </div>
-
-                    <!-- Botón Estado -->
-                    <div class="menu-card" onclick="alert('Función en desarrollo')">
-                        <div class="icon-lg">📋</div>
-                        <h3>Mi Estado</h3>
-                        <p>Historial y multas</p>
-                    </div>
-
-                </div>
+            <!-- Resumen Usuario -->
+            <div class="card">
+                <h3>Mi Actividad</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Estado actual de tu cuenta.</p>
+                <ul>
+                    <li>Reservas Activas <span id="resumen-reservas">0 / 3</span></li>
+                    <li>Material Retirado <span id="resumen-prestamos">0</span></li>
+                </ul>
             </div>
-        </section>
-    </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 DuocUC - Institución ....</p>
         </div>
-    </footer>
-    <!-- AGREGA ESTO AL FINAL DE index.html -->
+    </div>
+
+    <script src="mock-db.js"></script>
     <script>
-        const searchBtn = document.querySelector('.search-btn');
-        const searchInput = document.querySelector('.search-input');
-
-        // Función al hacer clic en la lupa
-        searchBtn.addEventListener('click', () => {
-            realizarBusqueda();
+        // Cargar Tendencias
+        const tops = obtenerTopMateriales();
+        const listaTop = document.getElementById('top-list');
+        
+        tops.forEach((m, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${m.titulo}</span> <span>${m.veces_prestado} veces</span>`;
+            listaTop.appendChild(li);
         });
 
-        // Función al presionar ENTER en el teclado
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                realizarBusqueda();
-            }
-        });
-
-        function realizarBusqueda() {
-            const termino = searchInput.value.trim();
-            if (termino) {
-                // Redirige a reservas.html pasando el texto en la URL
-                window.location.href = `reservas.html?busqueda=${encodeURIComponent(termino)}`;
-            } else {
-                alert("Por favor escribe algo para buscar.");
-            }
-        }
+        // Resumen Dinámico
+        const activas = reservas.filter(r => r.idusuario === usuarioActual.id && r.estado === 'Activa');
+        document.getElementById('resumen-reservas').innerText = activas.length;
+        
+        const prestamosActivos = prestamos.filter(p => p.idusuario === usuarioActual.id && p.estado === 'Pendiente');
+        document.getElementById('resumen-prestamos').innerText = prestamosActivos.length;
     </script>
 </body>
 </html>

@@ -2,273 +2,81 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca DuocUC | Reservas</title>
-    <!-- Usamos el mismo CSS para mantener la consistencia -->
+    <title>Reserva de Espacios</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- Header -->
     <header>
-        <div class="container header-content">
-            <div class="logo" onclick="window.location.href='index.html'">
-                <span class="logo-duoc">Duoc</span><span class="logo-uc">UC</span>
-            </div>
-
-            <nav>
-                <ul>
-                    <!-- Enlace activo cambia a Reservas -->
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="reservas.html" class="active">Reservas</a></li>
-                    <li><a href="#">Catálogo</a></li>
-                </ul>
-            </nav>
-
-            <div class="user-profile">
-                <span>ESTUDIANTE</span>
-                <div class="avatar">EP</div>
-            </div>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <span>Biblioteca</span><span>DuocUC</span>
         </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="catalogo.html">Inventario</a></li>
+                <li><a href="reservas.html" class="active">Reservar</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <!-- Contenido Principal -->
-    <main class="reservations-section fade-in">
-        <div class="container">
-            <h2 style="text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 20px;">Nueva Reserva</h2>
-            
-            <div class="search-container" style="margin-bottom: 30px;">
-                <input type="text" id="filtro-local" class="search-input" placeholder="Filtrar por título, autor o ISBN...">
-                <button class="search-btn" id="btn-filtrar">
-                    <!-- Icono de Lupa SVG -->
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </button>
-            </div>
+    <div class="container">
+        <h2>Reserva de Materiales</h2>
+        <p style="color:var(--text-muted); margin-bottom:20px;">Selecciona un material para apartarlo por 48 horas.</p>
+        
+        <div id="msg-box"></div>
 
-            <div class="reservations-container">
-                <!-- Formulario Lateral -->
-                <div class="reservation-form-card">
-                    <h4 style="color: white; margin-bottom: 20px; text-transform: uppercase;">Datos del Solicitante</h4>
-                    <form id="form-reserva">
-                        <div class="form-group">
-                            <label>RUT</label>
-                            <input type="text" id="rut" placeholder="12.345.678-9" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Carrera</label>
-                            <select id="carrera">
-                                <option value="" disabled selected>-- SELECCIONAR --</option>
-                                <option value="pro">Analista Programador</option>
-                                <option value="adm">Técnico en Administración</option>
-                                <option value="enf">Técnico en Enfermería</option>
-                                <option value="ele">Técnico en Electricidad y Automatización Industrial</option>
-                                <option value="log">Técnico en Gestión Logística</option>
-                            </select>
-                        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Autor</th>
+                    <th>Estado en Sede</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-reservas"></tbody>
+        </table>
+    </div>
 
-                        <div class="form-group">
-                            <label>Sede</label>
-                            <select id="sede">
-                                <option value="na">Sede Nacimiento</option>
-                                <option value="vm">Sede Viña del Mar</option>
-                                <option value="co">Sede Concepción</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Ejemplar Seleccionado</label>
-                            <input type="text" id="book-selected" placeholder="Ningún libro seleccionado" readonly style="color: #666; cursor: default;">
-                        </div>
-
-                        <button type="submit" class="btn-submit">Confirmar Reserva</button>
-                    </form>
-                </div>
-
-                <!-- Grid de Libros Disponibles -->
-                <div>
-                    <h4 style="color: #666; margin-bottom: 15px; text-transform: uppercase; font-size: 0.9rem;">Disponibilidad Inmediata</h4>
-                    
-                    <!-- IMPORTANTE: Agregué id="books-grid" aquí -->
-                    <div class="books-grid" id="books-grid">
-                        <!-- Los libros se generarán aquí automáticamente con JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 DuocUC - Corporación de Desarrollo Social</p>
-        </div>
-    </footer>
-
+    <script src="mock-db.js"></script>
     <script>
-        // 1. BASE DE DATOS DE LIBROS
-        const libros = [
-            {
-                id: 1,
-                titulo: "Física Universitaria",
-                autor: "Sears & Zemansky",
-                img: "https://picsum.photos/seed/fisica/300/400"
-            },
-            {
-                id: 2,
-                titulo: "Análisis Matemático",
-                autor: "Tom Apostol",
-                img: "https://picsum.photos/seed/math/300/400"
-            },
-            {
-                id: 3,
-                titulo: "Marketing Estratégico",
-                autor: "Philip Kotler",
-                img: "https://picsum.photos/seed/market/300/400"
-            },
-            {
-                id: 4,
-                titulo: "Derecho Civil",
-                autor: "Arturo Alessandri",
-                img: "https://picsum.photos/seed/legal/300/400"
-            },
-            {
-                id: 5,
-                titulo: "Programación en Python",
-                autor: "Guido Van Rossum",
-                img: "https://picsum.photos/seed/python/300/400"
-            },
-            {
-                id: 6,
-                titulo: "Historia del Arte",
-                autor: "Gombrich",
-                img: "https://picsum.photos/seed/art/300/400"
-            }
-        ];
-        
-        // 2. FUNCIÓN PARA BÚSQUEDA INTELIGENTE
-        function normalizarTexto(texto) {
-            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-        }
+        function renderizarMateriales() {
+            const tbody = document.getElementById('tabla-reservas');
+            tbody.innerHTML = '';
 
-        // 3. FUNCIÓN QUE CREA EL HTML
-        function crearCardLibro(libro) {
-            return `
-                <div class="book-card" onclick="selectBook(this, '${libro.titulo}')">
-                    <div class="book-cover">
-                        <img src="${libro.img}" alt="${libro.titulo}">
-                    </div>
-                    <div class="book-info">
-                        <div class="book-title">${libro.titulo}</div>
-                        <div class="book-author">${libro.autor}</div>
-                        <div class="book-action">
-                            <button class="btn-select">Seleccionar</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+            materiales.forEach(m => {
+                const tr = document.createElement('tr');
+                const disabled = m.stock <= 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : '';
+                const btnText = m.stock <= 0 ? 'Agotado' : 'Reservar';
+                const estadoColor = m.stock > 0 ? '#4CAF50' : 'var(--brand-red)';
+                const estadoTexto = m.stock > 0 ? 'Disponible' : 'Sin Stock';
 
-        // 4. FUNCIÓN CENTRAL DE FILTRADO (Se usa para URL y para el Input local)
-        function aplicarFiltro(terminoBusqueda) {
-            const grid = document.getElementById('books-grid');
-            const tituloSeccion = document.querySelector('h2');
-
-            let librosFiltrados = libros;
-
-            if (terminoBusqueda) {
-                const terminoNormalizado = normalizarTexto(terminoBusqueda);
-                librosFiltrados = libros.filter(libro => {
-                    const tituloNormalizado = normalizarTexto(libro.titulo);
-                    const autorNormalizado = normalizarTexto(libro.autor);
-                    return tituloNormalizado.includes(terminoNormalizado) || 
-                           autorNormalizado.includes(terminoNormalizado);
-                });
-            }
-
-            // Renderizar
-            if (librosFiltrados.length > 0) {
-                grid.innerHTML = librosFiltrados.map(libro => crearCardLibro(libro)).join('');
-
-                // Cambiar título según contexto
-                if (terminoBusqueda) {
-                    tituloSeccion.innerText = `Resultados para: "${terminoBusqueda}" (${librosFiltrados.length})`;
-                } else {
-                    tituloSeccion.innerText = "Nueva Reserva";
-                }
-            } else {
-                grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
-                        <h3 style="color: white; margin-bottom: 10px;">No se encontraron resultados</h3>
-                        <p>Intenta con otro término.</p>
-                        <br>
-                        <a href="reservas.html" style="color: var(--brand-yellow);">Ver todos los libros</a>
-                    </div>
+                tr.innerHTML = `
+                    <td style="color:white; font-weight:bold;">${m.titulo}</td>
+                    <td style="color:var(--text-muted)">${m.autor}</td>
+                    <td><span style="color:${estadoColor}; font-weight:bold; padding: 4px 8px; background:rgba(255,255,255,0.05); border-radius:2px;">${estadoTexto}</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="reservar(${m.id})" ${disabled}>${btnText}</button>
+                    </td>
                 `;
-                tituloSeccion.innerText = `Sin resultados para: "${terminoBusqueda}"`;
-            }
+                tbody.appendChild(tr);
+            });
         }
 
-        // 5. EVENTOS AL CARGAR PÁGINA
-        document.addEventListener('DOMContentLoaded', () => {
-            // A. Verificar si viene desde Index con búsqueda en URL
-            const parametrosURL = new URLSearchParams(window.location.search);
-            const busquedaURL = parametrosURL.get('busqueda');
-
-            if (busquedaURL) {
-                // Si vino de Index, llenamos el input local y filtramos
-                document.getElementById('filtro-local').value = busquedaURL;
-                aplicarFiltro(busquedaURL);
+        function reservar(id) {
+            const resultado = crearReserva(id);
+            const msgBox = document.getElementById('msg-box');
+            
+            if(resultado.success) {
+                msgBox.innerHTML = `<div class="alert alert-success">✓ ${resultado.msg}</div>`;
+                renderizarMateriales();
             } else {
-                // Si entró directo, mostramos todo
-                aplicarFiltro("");
+                msgBox.innerHTML = `<div class="alert alert-error">✕ ${resultado.msg}</div>`;
             }
-
-            // B. Eventos del Buscador Local (Nueva funcionalidad)
-            const inputLocal = document.getElementById('filtro-local');
-            const btnFiltrar = document.getElementById('btn-filtrar');
-
-            // Click en la lupa
-            btnFiltrar.addEventListener('click', () => {
-                aplicarFiltro(inputLocal.value);
-            });
-
-            // Presionar Enter
-            inputLocal.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    aplicarFiltro(inputLocal.value);
-                }
-            });
-        });
-
-        // 6. FUNCIÓN DE SELECCIÓN
-        function selectBook(cardElement, bookTitle) {
-            document.querySelectorAll('.book-card').forEach(card => {
-                card.classList.remove('selected');
-                const btn = card.querySelector('.btn-select');
-                btn.innerText = "SELECCIONAR";
-            });
-        
-            cardElement.classList.add('selected');
-            cardElement.querySelector('.btn-select').innerText = "SELECCIONADO";
-        
-            const input = document.getElementById('book-selected');
-            input.value = bookTitle;
-            input.style.color = "var(--brand-yellow)";
-            input.style.borderColor = "var(--brand-yellow)";
+            setTimeout(() => msgBox.innerHTML = '', 4000);
         }
 
-        // 7. MANEJO DEL FORMULARIO
-        document.getElementById('form-reserva').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert("Reserva enviada al sistema.");
-            this.reset();
-            // Opcional: Limpiar filtro después de reservar
-            // aplicarFiltro("");
-            // document.getElementById('filtro-local').value = "";
-        });
+        renderizarMateriales();
     </script>
 </body>
 </html>

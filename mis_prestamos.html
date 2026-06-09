@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Préstamos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <span>Biblioteca</span><span>DuocUC</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="catalogo.html">Inventario</a></li>
+                <li><a href="mis_prestamos.html" class="active">Mis Préstamos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Historial de Préstamos</h2>
+        <p style="color:var(--text-muted); margin-bottom:20px;">Revisa el estado de tus materiales retirados.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Fecha Retiro</th>
+                    <th>Fecha Límite</th>
+                    <th>Estado Actual</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-prestamos"></tbody>
+        </table>
+    </div>
+
+    <script src="mock-db.js"></script>
+    <script>
+        const lista = obtenerPrestamosUsuario();
+        const tbody = document.getElementById('tabla-prestamos');
+
+        if(lista.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:30px;">No tienes préstamos activos ni históricos.</td></tr>';
+        } else {
+            lista.forEach(p => {
+                const tr = document.createElement('tr');
+                let estadoVisual = p.estado;
+                let claseEstado = '';
+
+                if(p.atrasado) {
+                    estadoVisual += " (Vencido)";
+                    claseEstado = 'atrasado';
+                } else if (p.estado === 'Devuelto') {
+                    claseEstado = 'al-dia';
+                }
+
+                tr.innerHTML = `
+                    <td style="color:white;">${p.titulo_material}</td>
+                    <td style="color:var(--text-muted);">${p.fecha_prestamo}</td>
+                    <td style="color:var(--text-muted);">${p.fecha_devolucion}</td>
+                    <td class="${claseEstado}" style="font-weight:bold;">${estadoVisual}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
