@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS prestamo (
     FOREIGN KEY (idcopia) REFERENCES copia(idcopia)
 );
 ```
-
+---
 # 2. Conexión con Python
 
 Para conectar HTML con Python y MariaDB:<br>
@@ -90,20 +90,75 @@ pip install mysql-connector-python
 ```
 <br>
 
-
+---
 # Funcionalidad
 ## ¿Cómo funcionará el sistema ahora?
 > MariaDB: esto guardará los datos reales<br>
 > Python: recibe las peticiones del html, consulta a MariaDB y devuelve el resultado en formato JSON <br>
 > HTML: obvio la parte visual, esto muestra los datos que le envió python <br>
-
+---
 
 # Aplicación/Despliegue
 ## Es necesario activar el entorno antes de usar activar el app.py:
 ```console
 source venv/bin/activate
 ```
+
 ### y luego ya se puede usar la app:
 ```console
 python app.py
 ```
+---
+<br>
+
+# SOLUCIONES
+## 1. Errores con venv
+Es común al parecer que hayan errores con esto ya que un archivo tan pesado como la carpeta _venv_ no se puede subir al repositorio<br>
+la visión que tengo de la carpeta creada en mi entorno se ve de la siguiente forma:
+```text
+BIBLIOTECA/
+  ├── app.py
+  ├── venv/ (se queda, pero no se sube a github)
+  ├── templates/
+  │    ├── index.html
+  │    ├── mobile.html
+  │    ├── catalogo.html
+  │    └── mis_prestamos.html
+  └── static/
+       └── style.css
+```
+Al no ser posible Uplodear los archivos en github de esta forma, lo que hice fue lo siguiente (MUY IMPORTANTE)<br>
+#### Creé un archivo llamado .gitinore, el cual posee lo siguiente adentro:
+```text
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+```
+Esto evita que tenga que subir la carpeta venv (que ocupa mucho espacio) o archivos temporales de Python
+
+
+
+
+
+
+
+---
+
+# Instalación
+(para facilitarle la vida otras personas)
+### 1. Crear entorno virtual:
+   `python -m venv venv` <br>
+   `source venv/bin/activate` (Linux) o `venv\Scripts\activate` (Windows)
+
+### 2. Instalar dependencias:
+   `pip install -r requirements.txt`
+
+### 3. Configurar Base de Datos:
+Ejecuta el script SQL en MariaDB para crear la tabla `biblioteca_duoc`.
+
+### 4. Ejecutar aplicación:
+   `python app.py`
+   Ir a http://localhost:5000/m
+
+---
