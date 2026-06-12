@@ -77,9 +77,18 @@ CREATE TABLE IF NOT EXISTS prestamo (
 # 2. Conexión con Python
 
 Para conectar HTML con Python y MariaDB:<br>
-> Python (Obvio, pero si el entorno es Windows, necesitamos descargarlo por python.org)<br>
-> Flask: pip install flask<br>
-> Conector MariaDB: pip install mysql-connector-python<br>
+> # Python:
+(Obvio, pero si el entorno es Windows, necesitamos descargarlo por python.org)<br>
+> # Flask:
+```console
+pip install flask
+```
+
+> # Conector MariaDB:
+```console
+pip install mysql-connector-python
+```
+<br>
 
 
 # Funcionalidad
