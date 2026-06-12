@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS usuario (
     rut VARCHAR(12) NOT NULL UNIQUE,
     nombre VARCHAR(100) NOT NULL,
     idtipousuario INT,
+    clave VARCHAR(50), 
     FOREIGN KEY (idtipousuario) REFERENCES tipo_usuario(idtipousuario)
 );
 
@@ -97,6 +98,26 @@ CREATE TABLE IF NOT EXISTS prestamo (
     FOREIGN KEY (idusuario) REFERENCES usuario(idusuario),
     FOREIGN KEY (idcopia) REFERENCES copia(idcopia)
 );
+```
+---
+## 1.1 Insertar un Administrador y un Estudiante de prueba
+```sql
+USE biblioteca_duoc;
+
+-- 1. Crear tipos (si no existen)
+INSERT INTO tipo_usuario (nombre) VALUES ('Administrador');
+INSERT INTO tipo_usuario (nombre) VALUES ('Estudiante');
+
+-- 2. Crear usuarios de Prueba
+-- NOTA: El password 'admin123' y '1234' son los que pusimos en el código Python
+
+-- USUARIO ADMINISTRADOR
+INSERT INTO usuario (rut, nombre, clave, idtipousuario) 
+VALUES ('11111111-1', 'Admin Biblioteca', 'admin123', 1);
+
+-- USUARIO ESTUDIANTE
+INSERT INTO usuario (rut, nombre, clave, idtipousuario) 
+VALUES ('22222222-2', 'Estudiante Duoc', '1234', 2);
 ```
 ---
 # 2. Conexión con Python
