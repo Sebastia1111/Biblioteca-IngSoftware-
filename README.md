@@ -1,5 +1,30 @@
 <h1 align="center">Biblioteca Académica <br>REQUERIMIENTOS</h1> <br>
 
+```mermaid
+graph TD
+    Repo((Biblioteca Duoc))
+    
+    %% Archivos Raíz
+    Repo --> git[.gitignore]
+    Repo --> read[README.md]
+    Repo --> req[requirements.txt]
+    Repo --> sql[schema.sql]
+    Repo --> app[app.py]
+    
+    %% Carpetas y contenido
+    Repo --> sta(static)
+    Repo --> tem(templates)
+
+    %% Contenido de static
+    sta --> css[style.css]
+
+    %% Contenido de templates
+    tem --> ind[index.html]
+    tem --> mob[mobile.html]
+    tem --> cat[catalogo.html]
+    tem --> mis[mis_prestamos.html]
+```
+
 # 1. Estructura BD
 
 ```sql
