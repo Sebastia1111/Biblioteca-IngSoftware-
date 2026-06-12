@@ -96,3 +96,14 @@ pip install mysql-connector-python
 > MariaDB: esto guardará los datos reales<br>
 > Python: recibe las peticiones del html, consulta a MariaDB y devuelve el resultado en formato JSON <br>
 > HTML: obvio la parte visual, esto muestra los datos que le envió python <br>
+
+
+# Aplicación/Despliegue
+## Es necesario activar el entorno antes de usar activar el app.py:
+```console
+source venv/bin/activate
+```
+### y luego ya se puede usar la app:
+```console
+python app.py
+```
