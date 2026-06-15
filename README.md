@@ -1,29 +1,49 @@
 <h1 align="center">Biblioteca Académica <br>REQUERIMIENTOS</h1> <br>
 
+
 ```mermaid
 graph TD
-    Repo((Biblioteca Duoc))
+    Repo((Biblioteca DuocUC))
     
-    %% Archivos Raíz
+    %% Archivos Raiz
     Repo --> git[.gitignore]
     Repo --> read[README.md]
     Repo --> req[requirements.txt]
-    Repo --> sql[schema.sql]
     Repo --> app[app.py]
     
-    %% Carpetas y contenido
+    %% Carpetas
+    Repo --> db(database)
     Repo --> sta(static)
     Repo --> tem(templates)
 
-    %% Contenido de static
-    sta --> css[style.css]
+    %% Contenido Database
+    db --> sql[schema.sql]
+    db --> ins[inserts.sql]
 
-    %% Contenido de templates
-    tem --> ind[index.html]
-    tem --> mob[mobile.html]
-    tem --> cat[catalogo.html]
-    tem --> mis[mis_prestamos.html]
+    %% Contenido de static
+    sta --> css_dir(css)
+    css_dir --> css_file[style.css]
+
+    %% Contenido de templates ordenado
+    tem --> desk(desktop)
+    tem --> mob_dir(mobile)
+    
+    desk --> ind[index.html]
+    desk --> cat[catalogo.html]
+    desk --> mis[mis_prestamos.html]
+    
+    mob_dir --> mob[mobile.html]
+
+    %% Estilos corregidos para compatibilidad con GitHub
+    classDef folder fill:#2c3e50,stroke:#34495e,stroke-width:2px,color:#fff;
+    classDef file fill:#ecf0f1,stroke:#bdc3c7,stroke-width:1px,color:#2c3e50;
+    
+    class db,sta,tem,desk,mob_dir folder;
+    class git,read,req,app,sql,ins,css_file,ind,cat,mis,mob file;
+
 ```
+
+
 
 # 1. Estructura BD
 
