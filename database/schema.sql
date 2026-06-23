@@ -11,12 +11,13 @@ CREATE TABLE IF NOT EXISTS tipo_usuario (
 CREATE TABLE IF NOT EXISTS usuario (
     rut VARCHAR(12) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(150) NOT NULL, 
     password VARCHAR(255) NOT NULL,
     idtipousuario INT,
     FOREIGN KEY (idtipousuario) REFERENCES tipo_usuario(idtipousuario)
 );
 
--- 3. Categorías / Tipos de Material (Exigido por el Scrum)
+-- 3. Categorías / Tipos de Material
 CREATE TABLE IF NOT EXISTS tipo_material (
     idtipo INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS material (
     FOREIGN KEY (idtipo) REFERENCES tipo_material(idtipo)
 );
 
--- 5. Copias o Ejemplares Físicos/Digitales (Para el control de Inventario)
+-- 5. Copias o Ejemplares Físicos/Digitales
 CREATE TABLE IF NOT EXISTS copia (
     idcopia INT AUTO_INCREMENT PRIMARY KEY,
     idmaterial INT,
@@ -52,14 +53,15 @@ CREATE TABLE IF NOT EXISTS prestamo (
     FOREIGN KEY (idcopia) REFERENCES copia(idcopia)
 );
 
--- INSERTS BASE PARA PRUEBAS (Pasa el login de inmediato)
+-- INSERTS BASE PARA PRUEBAS
 INSERT INTO tipo_usuario (nombre) VALUES ('Administrador'), ('Estudiante') ON DUPLICATE KEY UPDATE nombre=nombre;
 
--- Cuentas de prueba (Contraseñas planas para facilitar el desarrollo en el entorno local)
-INSERT INTO usuario (rut, nombre, password, idtipousuario) VALUES 
-('11111111-1', 'Pedro Estudiante', 'duoc123', 2),
-('22222222-2', 'Ana Administradora', 'admin123', 1)
-ON DUPLICATE KEY UPDATE nombre=nombre;
+-- Cuentas de prueba con correos
+INSERT INTO usuario (rut, nombre, correo, password, idtipousuario) VALUES 
+('22163627-9', 'Magdalena Zuñiga', 'magd.zuniga@duocuc.cl', 'magda', 2),
+('22182484-9', 'Felipe Cea', 'feli.cea@duocuc.cl', 'felipollas', 2),
+('22130895-6', 'Sebastian Orellana', 'seba.orellanav@duocuc.cl', 'admin123', 1)
+ON DUPLICATE KEY UPDATE nombre=nombre, correo=values(correo);
 
 -- Tipos de material iniciales
 INSERT INTO tipo_material (nombre, activo) VALUES 
