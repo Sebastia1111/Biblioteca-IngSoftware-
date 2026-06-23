@@ -1,1 +1,678 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>App Movil Biblioteca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#141311; --surface:#1d1c19; --surface-2:#25231f; --text:#ece7df; --muted:#aaa59d;
+      --primary:#ffde21d5; --primary-2:#66b0bb; --success:#78b554; --warning:#d3875a; --danger:#d96d7c;
+      --border:#38352f; --shadow:0 12px 24px rgba(0,0,0,.28);
+    }
+    * { box-sizing:border-box; transition: background-color 0.2s ease, border-color 0.2s ease; }
+    body {
+      margin:0; font-family:'Inter',sans-serif; background:linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 78%, var(--primary) 22%));
+      color:var(--text); min-height:100vh; display:grid; place-items:center; padding:20px;
+    }
+    .shell {
+      width:100%; max-width:420px; height:860px; background:var(--surface); border:1px solid var(--border);
+      border-radius:36px; box-shadow:var(--shadow); overflow:hidden; position:relative; display:flex; flex-direction:column;
+    }
+    .statusbar {
+      display:flex; justify-content:space-between; align-items:center; padding:14px 24px 4px; font-size:12px; color:var(--muted); font-weight: 500;
+    }
+    .screen { display:none; padding:20px 20px 120px; height:calc(100% - 40px); overflow-y:auto; opacity: 0; }
+    .screen.active { display:block; animation: fadeIn 0.3s ease forwards; }
+    
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
 
+    .hero-card, .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 6px 14px rgba(0,0,0,.02); }
+    .hero-card { padding:22px; background:linear-gradient(180deg, color-mix(in srgb, var(--surface) 85%, var(--primary) 15%), var(--surface)); }
+    .eyebrow { color:var(--primary); font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+    h1, h2, h3, h4 { margin:0; }
+    h1 { font-family:'Instrument Serif', serif; font-size:36px; line-height:1; margin-top:6px; }
+    h2 { font-size:22px; margin-bottom:6px; font-weight: 700; letter-spacing: -0.02em; }
+    p { margin:0; }
+    .muted { color:var(--muted); }
+    .row { display:flex; gap:12px; align-items: center; }
+    .row.wrap { flex-wrap:wrap; }
+    .space { height:16px; }
+    
+    .search {
+      display:flex; align-items:center; gap:10px; margin-top:16px; background:var(--surface-2);
+      border:1px solid var(--border); border-radius:18px; padding:14px 16px; cursor:pointer;
+    }
+    .pill {
+      display:inline-flex; align-items:center; justify-content:center; padding:8px 14px; border-radius:999px;
+      background:var(--surface-2); color:var(--text); border:1px solid var(--border); font-size:12px; font-weight:600;
+    }
+    .pill.primary { background:color-mix(in srgb, var(--primary) 15%, var(--surface)); color:var(--primary); border-color:transparent; }
+    
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:18px; }
+    .stat { padding:14px 12px; border-radius:18px; background:var(--surface); border:1px solid var(--border); text-align: center; }
+    .stat strong { display:block; font-size:22px; color: var(--primary); margin-bottom:2px; }
+    
+    .section-title { display:flex; justify-content:space-between; align-items:center; margin:24px 0 12px; }
+    .list { display:grid; gap:12px; }
+    .book { padding:14px; display:grid; grid-template-columns:62px 1fr auto; gap:12px; align-items:center; }
+    .cover {
+      width:62px; height:86px; border-radius:12px; background:linear-gradient(160deg, var(--primary), var(--primary-2));
+      display:grid; place-items:center; color:white; font-weight:700; font-size:11px; text-align:center; padding:8px;
+    }
+    .book h3 { font-size:15px; margin-bottom:4px; font-weight: 600; }
+    .book small { display:block; color:var(--muted); line-height:1.4; }
+    
+    .tag { font-size:11px; font-weight:700; padding:6px 12px; border-radius:999px; text-align: center; }
+    .tag.ok { background:rgba(67,122,34,.12); color:var(--success); }
+    .tag.warn { background:rgba(150,66,25,.12); color:var(--warning); }
+    .tag.danger { background:rgba(161,53,68,.12); color:var(--danger); }
+    
+    .primary-btn, .secondary-btn, .danger-btn {
+      width:100%; border:none; padding:14px 18px; border-radius:18px; font-weight:700; font-size:14px; cursor:pointer; display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+    }
+    .primary-btn { background:var(--primary); color:white; box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent); }
+    .primary-btn:active { transform: scale(0.98); }
+    .secondary-btn { background:var(--surface-2); color:var(--text); border:1px solid var(--border); }
+    .danger-btn { background: rgba(161,53,68,0.1); color: var(--danger); border: 1px solid rgba(161,53,68,0.2); }
+    
+    .form-card { padding:20px; margin-bottom: 16px; }
+    label { display:block; font-size:11px; font-weight:700; color:var(--muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
+    input, select {
+      width:100%; border:1px solid var(--border); background:var(--surface-2); color:var(--text); border-radius:16px;
+      padding:14px; font-size:15px; margin-bottom:16px; font-family: inherit; -webkit-appearance: none;
+    }
+    input:focus, select:focus { outline:2px solid var(--primary); background: var(--surface); }
+    
+    .detail { padding:18px; }
+    .detail-grid { display:grid; gap:12px; }
+    
+    .kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .kpi { padding:16px; border-radius:18px; background:var(--surface-2); border:1px solid var(--border); }
+    .kpi strong { font-size:26px; display:block; margin-bottom:4px; color: var(--text); }
+    
+    .bottom-nav {
+      position:absolute; left:16px; right:16px; bottom:16px; display:none; grid-template-columns:repeat(3,1fr);
+      gap:8px; background:color-mix(in srgb, var(--surface) 85%, transparent); backdrop-filter:blur(20px);
+      border:1px solid var(--border); border-radius:26px; padding:8px; box-shadow:var(--shadow); z-index: 100;
+    }
+    .bottom-nav.admin-mode { grid-template-columns:repeat(4,1fr); }
+    .nav-item {
+      border:none; background:transparent; color:var(--muted); border-radius:18px; padding:10px 4px; font-size:11px; font-weight:700;
+      display:grid; gap:4px; justify-items:center; cursor:pointer;
+    }
+    .nav-item.active { background:var(--surface); color:var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+    .nav-icon { width:20px; height:20px; border-radius:4px; background:currentColor; mask-size:contain; mask-position:center; mask-repeat:no-repeat; -webkit-mask-size:contain; -webkit-mask-position:center; -webkit-mask-repeat:no-repeat; }
+    
+    .icon-home { mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 3l9 7v11h-6v-7H9v7H3V10l9-7z"/></svg>'); -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 3l9 7v11h-6v-7H9v7H3V10l9-7z"/></svg>'); }
+    .icon-search { mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>'); -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>'); }
+    .icon-book { mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M5 3h11a4 4 0 014 4v14H8a3 3 0 00-3 3V3zm3 2v13h10V7a2 2 0 00-2-2H8z"/></svg>'); -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M5 3h11a4 4 0 014 4v14H8a3 3 0 00-3 3V3zm3 2v13h10V7a2 2 0 00-2-2H8z"/></svg>'); }
+    .icon-user { mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.418 0-8 2.239-8 5v3h16v-3c0-2.761-3.582-5-8-5z"/></svg>'); -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.418 0-8 2.239-8 5v3h16v-3c0-2.761-3.582-5-8-5z"/></svg>'); }
+    
+    .header-inline { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+    .logout-btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; background: rgba(161,53,68,0.1); color: var(--danger); border: none; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .notice { padding:14px 16px; border-radius:18px; background:color-mix(in srgb, var(--primary) 10%, var(--surface)); border:1px solid var(--border); font-size: 13px; line-height: 1.4; }
+    
+    /* MEJORAS EXCLUSIVAS SUB-PANEL ADMIN */
+    .admin-menu-grid { display:grid; gap:12px; }
+    .admin-menu-item { padding:16px; text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .admin-menu-item:active { background: var(--surface-2); }
+    .sub-view { display: none; }
+    .sub-view.active { display: block; }
+    .table-list { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .table-list th, .table-list td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; font-size: 13px; }
+    .table-list th { color: var(--muted); text-transform: uppercase; font-size: 11px; }
+    .error-msg { color:var(--danger); font-size:13px; font-weight:600; margin-bottom:14px; display:none; padding: 10px; background: rgba(161,53,68,0.08); border-radius: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="shell" role="application" aria-label="Prototipo móvil de biblioteca">
+    <div class="statusbar"><span>06:07</span><span>***</span><span>67%</span></div>
+
+    <section class="screen active" id="screen-login">
+      <div class="header-inline" style="margin-top: 40px; margin-bottom: 35px;">
+        <div>
+          <div class="eyebrow">Acceso Institucional</div>
+          <h1>Biblioteca DuocUC</h1>
+        </div>
+      </div>
+      <div class="form-card card">
+        <h2 style="margin-bottom: 20px;">Iniciar Sesión</h2>
+        <div id="login-error" class="error-msg"></div>
+        <label for="input-rut">RUT Usuario</label>
+        <input id="input-rut" type="text" placeholder="Ej: 11111111-1" required />
+        <label for="input-password">Contraseña</label>
+        <input id="input-password" type="password" placeholder="••••••••" required />
+        <button class="primary-btn" onclick="procesarLogin()">Ingresar</button>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-home">
+      <div class="header-inline">
+        <div>
+          <div class="eyebrow" id="user-role-label">Estudiante</div>
+          <h1 id="user-welcome-label">Tu biblioteca</h1>
+        </div>
+        <button class="logout-btn" onclick="cerrarSesion()">Cerrar Sesión</button>
+      </div>
+      <div class="hero-card">
+        <p class="muted" style="font-size: 13px; margin-bottom: 4px;">Resumen general de tu cuenta</p>
+        <div class="stats">
+          <div class="stat"><strong id="home-count-prestamos">0</strong><span class="muted" style="font-size:11px;">Préstamos</span></div>
+          <div class="stat"><strong id="home-count-reservas">0</strong><span class="muted" style="font-size:11px;">Reservas</span></div>
+          <div class="stat"><strong id="home-count-atrasos">0</strong><span class="muted" style="font-size:11px;">Atrasos</span></div>
+        </div>
+        <div class="space"></div>
+        <div class="notice" id="home-notice-box">No registras alertas pendientes actualmente.</div>
+      </div>
+      <div class="search" onclick="showScreen('search'); cargarCatalogoReal();">
+        <span>🔎</span>
+        <span class="muted">Buscar por título, autor...</span>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-search">
+      <div class="header-inline">
+        <div>
+          <div class="eyebrow">Búsqueda</div>
+          <h2>Material Bibliográfico</h2>
+        </div>
+      </div>
+      <div class="form-card card">
+        <label for="busqueda">Filtrar material</label>
+        <!-- Agregamos un oninput para que filtre de verdad más adelante si quieres -->
+        <input id="busqueda" placeholder="Buscar libro..." oninput="filtrarCatalogoReal()" />
+        <div class="row wrap"><span class="pill primary">Filtro Inteligente</span></div>
+      </div>
+      <div class="section-title"><h2>Resultados PROBANDO</h2></div>
+      
+      <div class="list" id="contenedor-libros">
+        <div class="card book" style="border: 2px solid var(--primary);">
+          <div class="cover">TEST</div>
+          <div>
+            <h3>Libro de Prueba Visual</h3>
+            <small>Si ves esto, el CSS está bien y el problema es 100% el script</small>
+          </div>
+          <span class="tag ok">Ver</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-detail">
+      <div class="header-inline">
+        <div>
+          <div class="eyebrow">Catálogo</div>
+          <h2>Detalle de Material</h2>
+        </div>
+        <button class="secondary-btn" style="width:auto;padding:10px 12px;" onclick="showScreen('search')">Volver</button>
+      </div>
+      
+      <!-- MODIFICAMOS ESTA CARD PARA QUE REACCIONE AL LIBRO CLICKEADO -->
+      <div class="card detail" id="bloque-detalle">
+        <!-- Se rellenará dinámicamente al hacer clic en un libro -->
+      </div>
+    </section>
+
+    <section class="screen" id="screen-loans">
+      <div class="header-inline">
+        <div>
+          <div class="eyebrow">Mi Ficha Académica</div>
+          <h2>Estado de Cuentas</h2>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><strong id="kpi-total-prestamos">0</strong><span class="muted">Total histórico</span></div>
+        <div class="kpi"><strong id="kpi-vigentes" style="color:var(--success);">0</strong><span class="muted">Vigentes</span></div>
+      </div>
+      <div class="section-title"><h2>Mis Libros en Posesión</h2></div>
+      <div class="list" id="lista-prestamos-reales"></div>
+    </section>
+
+    <section class="screen" id="screen-admin">
+      <div id="admin-main-menu" class="sub-view active">
+        <div class="header-inline">
+          <div>
+            <div class="eyebrow">Administración</div>
+            <h2>Panel Operaciones</h2>
+          </div>
+          <span class="pill primary">Estación</span>
+        </div>
+        
+        <div class="admin-menu-grid">
+          <div class="admin-menu-item" onclick="openAdminSubView('view-categories')">
+            <div><strong>🗂️ Categorías de Material</strong><p class="muted" style="font-size:12px;">Libro, revista, tesis, digital...</p></div>
+            <span>❯</span>
+          </div>
+          <div class="admin-menu-item" onclick="openAdminSubView('view-inventory')">
+            <div><strong>📦 Actualización de Inventario</strong><p class="muted" style="font-size:12px;">Ajustar stock, bajas y daños</p></div>
+            <span>❯</span>
+          </div>
+          <div class="admin-menu-item" onclick="openAdminSubView('view-transactions')">
+            <div><strong>🔄 Préstamo y Devolución</strong><p class="muted" style="font-size:12px;">Registrar movimientos en mesón</p></div>
+            <span>❯</span>
+          </div>
+          <div class="admin-menu-item" onclick="openAdminSubView('view-ranking')">
+            <div><strong>📊 Materiales Más Pedidos</strong><p class="muted" style="font-size:12px;">Ranking de reposición mensual</p></div>
+            <span>❯</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-categories" class="sub-view">
+        <div class="header-inline">
+          <h2>Categorías</h2>
+          <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
+        </div>
+        
+        <div class="form-card card">
+          <label id="form-cat-title">Agregar / Editar Tipo</label>
+          <input id="input-cat-nombre" type="text" placeholder="Ej: Material Digital" />
+          <div class="row">
+            <button class="primary-btn" onclick="guardarCategoria()">Guardar</button>
+            <button class="secondary-btn" onclick="limpiarFormCategoria()">Limpiar</button>
+          </div>
+        </div>
+
+        <table class="table-list">
+          <thead><tr><th>Nombre</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="tabla-categorias-body">
+            <tr><td>Libro</td><td><span class="tag ok">Activo</span></td><td><button class="danger-btn" style="padding:4px 8px;font-size:11px;">Desactivar</button></td></tr>
+            <tr><td>Revista</td><td><span class="tag ok">Activo</span></td><td><button class="danger-btn" style="padding:4px 8px;font-size:11px;">Desactivar</button></td></tr>
+            <tr><td>Tesis</td><td><span class="tag ok">Activo</span></td><td><button class="danger-btn" style="padding:4px 8px;font-size:11px;">Desactivar</button></td></tr>
+            <tr><td>Material Digital</td><td><span class="tag danger">Inactivo</span></td><td><button class="primary-btn" style="padding:4px 8px;font-size:11px;box-shadow:none;">Activar</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="view-inventory" class="sub-view">
+        <div class="header-inline">
+          <h2>Inventario</h2>
+          <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
+        </div>
+        <div class="form-card card">
+          <label>ID Copia / Ejemplar</label>
+          <input type="number" placeholder="Ej: 104" />
+          <label>Acción / Estado de stock</label>
+          <select>
+            <option value="disponible">Disponible (Ajustar Stock)</option>
+            <option value="danado">Registrar como Dañado</option>
+            <option value="baja">Dar de Baja Definitiva</option>
+          </select>
+          <button class="primary-btn">Aplicar Cambios</button>
+        </div>
+      </div>
+
+      <div id="view-transactions" class="sub-view">
+        <div class="header-inline">
+          <h2>Movimientos</h2>
+          <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
+        </div>
+        <div class="form-card card">
+          <label>RUT del Alumno</label>
+          <input type="text" placeholder="11111111-1" />
+          <label>ID Copia del Material</label>
+          <input type="number" placeholder="Ej: 45" />
+          <div class="row">
+            <button class="primary-btn" style="background:var(--success);">Préstamo</button>
+            <button class="primary-btn" style="background:var(--primary-2);">Devolución</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-ranking" class="sub-view">
+        <div class="header-inline">
+          <h2>Más Pedidos</h2>
+          <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
+        </div>
+        <p class="muted" style="font-size:13px; margin-bottom:12px;">Apoyo técnico a reposición:</p>
+        <div class="list">
+          <div class="card" style="padding:12px; display:flex; justify-content:space-between;">
+            <span><strong>1. Python para Desarrollo</strong><br><small class="muted">Libro Físico</small></span>
+            <span class="tag ok">42 Pedidos</span>
+          </div>
+          <div class="card" style="padding:12px; display:flex; justify-content:space-between;">
+            <span><strong>2. Scrum Guía Ágil</strong><br><small class="muted">Material Digital</small></span>
+            <span class="tag ok">29 Pedidos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="bottom-nav" id="main-nav" aria-label="Navegación principal">
+      <button class="nav-item active" data-screen="home"><span class="nav-icon icon-home"></span><span>Inicio</span></button>
+      <button class="nav-item" data-screen="search"><span class="nav-icon icon-search"></span><span>Buscar</span></button>
+      <button class="nav-item" data-screen="loans"><span class="nav-icon icon-book"></span><span>Mi ficha</span></button>
+      <button class="nav-item" data-screen="admin" id="nav-admin-tab" onclick="closeAdminSubView()"><span class="nav-icon icon-user"></span><span>Admin</span></button>
+    </nav>
+  </div>
+
+  <script>
+    const screens = {
+      login: document.getElementById('screen-login'),
+      home: document.getElementById('screen-home'),
+      search: document.getElementById('screen-search'),
+      detail: document.getElementById('screen-detail'),
+      loans: document.getElementById('screen-loans'),
+      admin: document.getElementById('screen-admin')
+    };
+    
+    const navItems = document.querySelectorAll('.nav-item');
+    const mainNav = document.getElementById('main-nav');
+    const adminTab = document.getElementById('nav-admin-tab');
+
+    // Función unificada que apaga pantallas y enciende la seleccionada
+    function showScreen(name) {
+      Object.values(screens).forEach(screen => {
+        if (screen) screen.classList.remove('active');
+      });
+      
+      if (screens[name]) {
+        screens[name].classList.add('active');
+      }
+      
+      navItems.forEach(item => item.classList.toggle('active', item.dataset.screen === name));
+    }
+
+    // CONTROL CENTRAL DE CLICS: Quitamos los onclick conflictivos del HTML
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const destino = item.dataset.screen;
+        
+        // 1. Cambiamos de pantalla primero que todo
+        showScreen(destino);
+        
+        // 2. Si va a buscar, gatilla la función de carga al instante
+        if (destino === 'search') {
+          cargarCatalogoReal();
+        }
+        
+        // 3. Si va a préstamos, gatilla la ficha
+        if (destino === 'loans') {
+          cargarFichaCompletaBD();
+        }
+      });
+    });
+
+
+    // CONTROLADORES INTERNOS PANEL ADMIN
+    function openAdminSubView(viewId) {
+      document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+    }
+
+    function closeAdminSubView() {
+      document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+      document.getElementById('admin-main-menu').classList.add('active');
+    }
+
+    // SIMULACIÓN O LLAMADOS DE MANTENEDOR CATEGORÍAS
+    function guardarCategoria() {
+      const txt = document.getElementById('input-cat-nombre').value.trim();
+      if(!txt) return alert("Escribe un nombre de tipo de material");
+      
+      // Aquí harás el fetch('/api/categorias', {method:'POST'...}) a Flask
+      alert(`Enviando a MariaDB para guardar tipo: ${txt}`);
+      limpiarFormCategoria();
+    }
+
+    function limpiarFormCategoria() {
+      document.getElementById('input-cat-nombre').value = "";
+    }
+
+    // CONSUMO INTEGRAL DE DATOS REALES DE MARIADB
+
+    async function procesarLogin() {
+      const rut = document.getElementById('input-rut').value.trim();
+      const password = document.getElementById('input-password').value;
+      const errorDiv = document.getElementById('login-error');
+
+      errorDiv.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rut: rut, password: password })
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.success) {
+          if (resultado.idtipousuario === 1) {
+            document.getElementById('user-role-label').innerText = "Administrador";
+            adminTab.style.display = "grid";
+            mainNav.classList.add('admin-mode');
+          } else {
+            document.getElementById('user-role-label').innerText = "Estudiante";
+            adminTab.style.display = "none";
+            mainNav.classList.remove('admin-mode');
+          }
+
+          document.getElementById('user-welcome-label').innerText = `¡Hola, ${resultado.nombre}!`;
+          mainNav.style.display = "grid"; 
+
+          await cargarResumenBD();
+          showScreen('home');
+        } else {
+          errorDiv.innerText = resultado.message;
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        errorDiv.innerText = "Error crítico de comunicación con Flask.";
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    async function cargarResumenBD() {
+      try {
+        const response = await fetch('/api/resumen_usuario');
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('home-count-prestamos').innerText = data.prestamos;
+          document.getElementById('home-count-reservas').innerText = data.reservas;
+          document.getElementById('home-count-atrasos').innerText = data.atrasos;
+
+          const noticeBox = document.getElementById('home-notice-box');
+          if (data.atrasos > 0) {
+            noticeBox.innerHTML = `⚠️ Tienes <strong>${data.atrasos} libro(s) atrasado(s)</strong>. Acércate al mesón de la biblioteca lo antes posible.`;
+            noticeBox.style.background = "rgba(161,53,68,0.1)";
+          } else if (data.prestamos > 0) {
+            noticeBox.innerHTML = `📘 Cuentas con <strong>${data.prestamos} libro(s)</strong> vigentes en tu ficha para lectura.`;
+            noticeBox.style.background = "color-mix(in srgb, var(--primary) 10%, var(--surface))";
+          } else {
+            noticeBox.innerText = "No registras alertas pendientes actualmente.";
+            noticeBox.style.background = "var(--surface-2)";
+          }
+        }
+      } catch (error) {
+        console.error("Error al cargar resumen:", error);
+      }
+    }
+
+    async function cargarFichaCompletaBD() {
+      const listaContenedor = document.getElementById('lista-prestamos-reales');
+      listaContenedor.innerHTML = '<p class="muted" style="text-align:center; padding:20px;">Sincronizando con MariaDB...</p>';
+
+      try {
+        const response = await fetch('/api/mis_prestamos');
+        if (response.ok) {
+          const prestamos = await response.json();
+          document.getElementById('kpi-total-prestamos').innerText = prestamos.length;
+          const vigentes = prestamos.filter(p => p.estado === 'Pendiente' || p.estado === 'Vigente').length;
+          document.getElementById('kpi-vigentes').innerText = vigentes;
+
+          listaContenedor.innerHTML = '';
+
+          if (prestamos.length === 0) {
+            listaContenedor.innerHTML = `
+              <div style="text-align:center; padding: 40px 20px;" class="muted">
+                <span style="font-size: 32px;">📭</span>
+                <p style="margin-top:10px; font-size:14px;">No tienes historial de préstamos en nuestra base de datos.</p>
+              </div>`;
+            showScreen('loans');
+            return;
+          }
+
+          prestamos.forEach(item => {
+            const cardHtml = document.createElement('div');
+            cardHtml.className = 'card book';
+            let tagClass = 'ok';
+            if (item.estado === 'Atrasado') tagClass = 'danger';
+            if (item.estado === 'Devuelto') tagClass = 'muted';
+
+            cardHtml.innerHTML = `
+              <div class="cover">${item.titulo.substring(0, 15)}...</div>
+              <div>
+                <h3>${item.titulo}</h3>
+                <small>Copia ID: #00${item.idcopia}<br>Devolución: ${item.fecha_devolucion || 'Sin fecha'}</small>
+              </div>
+              <span class="tag ${tagClass}">${item.estado}</span>
+            `;
+            listaContenedor.appendChild(cardHtml);
+          });
+        }
+        showScreen('loans');
+      } catch (error) {
+        listaContenedor.innerHTML = '<p class="error-msg" style="display:block;">Error al conectar con el historial real.</p>';
+        showScreen('loans');
+      }
+    }
+
+    async function cerrarSesion() {
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+        document.getElementById('input-rut').value = "";
+        document.getElementById('input-password').value = "";
+        mainNav.style.display = "none";
+        showScreen('login');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+
+
+
+    // Asegúrate de tener la variable global declarada arriba de todo en tus scripts:
+    let librosCargados = [];
+
+    // Dentro del .then(datos => { ... }) de tu resumen de usuario, agrega esto:
+    fetch('/api/resumen_usuario')
+      .then(res => res.json())
+      .then(datos => {
+        // 1. Guardamos los libros que vienen de MariaDB en las variables
+        librosCargados = datos.catalogo_completo || [];
+        localStorage.setItem('catalogo', JSON.stringify(librosCargados));
+
+        // 2. Aquí va el código que ya tenías para rellenar los contadores (préstamos, atrasos, etc.)
+        // Ej: document.getElementById('num-prestamos').innerText = datos.prestamos;
+      })
+      .catch(err => console.error("Error al cargar resumen:", err));
+
+
+    function cargarCatalogoReal() {
+      // Si la variable está vacía, intentamos recuperarla del localStorage por si acaso
+      if (!librosCargados || librosCargados.length === 0) {
+        const localData = localStorage.getItem('catalogo');
+        if (localData) {
+          librosCargados = JSON.parse(localData);
+        }
+      }
+
+      const contenedor = document.getElementById('contenedor-libros'); // Revisa que este ID coincida con tu HTML
+      if (!contenedor) return;
+
+      // Limpiamos por completo el contenedor (aquí muere el libro falso de prueba)
+      contenedor.innerHTML = '';
+
+      // Si la base de datos no devolvió nada, avisamos en pantalla
+      if (librosCargados.length === 0) {
+        contenedor.innerHTML = '<p style="text-align:center; padding:20px;">No hay libros registrados en la base de datos.</p>';
+        return;
+      }
+
+      // Dibujamos cada libro real de MariaDB
+      librosCargados.forEach(libro => {
+        contenedor.innerHTML += `
+          <div class="card book">
+            <div class="cover">📖</div>
+            <div class="book-info">
+              <h3>${libro.titulo}</h3>
+              <p>Autor: ${libro.autor}</p>
+              <small>Código Copia: <b>${libro.idcopia}</b></small>
+            </div>
+            <span class="tag ${libro.estado === 'Disponible' ? 'ok' : 'warn'}">${libro.estado}</span>
+            <button class="tag ok" onclick="reservarLibro(${libro.idcopia})">Reservar</button>
+          </div>
+        `;
+      });
+    }
+
+    // 3. Función encargada de dibujar las tarjetas en tu contenedor
+    function renderizarLibros(lista) {
+      const contenedor = document.getElementById('contenedor-libros');
+      if (!contenedor) return;
+      
+      contenedor.innerHTML = ''; // Limpiamos el contenedor
+
+      if (lista.length === 0) {
+        contenedor.innerHTML = '<p class="muted" style="text-align:center; padding:20px;">No se encontraron libros para tu búsqueda.</p>';
+        return;
+      }
+
+      lista.forEach(libro => {
+        contenedor.innerHTML += `
+          <div class="card book" onclick="verDetalleLibro(${libro.idcopia})">
+            <div class="cover">Libro</div>
+            <div>
+              <h3>${libro.titulo}</h3>
+              <small>Código Copia: <b>${libro.idcopia}</b><br>Autor: ${libro.autor}</small>
+            </div>
+            <span class="tag ok">Ver</span>
+          </div>
+        `;
+      });
+    }
+
+    // 4. Tu buscador en tiempo real (Arreglado para que no falle al escribir)
+    function filtrarCatalogoReal() {
+      const texto = document.getElementById('busqueda').value.toLowerCase().trim();
+      
+      // Filtramos sobre la variable global
+      const filtrados = librosCargados.filter(libro => 
+        libro.titulo.toLowerCase().includes(texto) || 
+        libro.autor.toLowerCase().includes(texto)
+      );
+      
+      renderizarLibros(filtrados);
+    }
+
+
+    function reservarLibro(idcopia) {
+      if (!confirm("¿Estás seguro de que deseas reservar este libro?")) return;
+
+      fetch('/api/resumen_usuario', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idcopia: idcopia }) // Solo mandamos el ID del libro
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(data.mensaje);
+          location.reload(); 
+        } else {
+          alert("Error: " + data.error);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
