@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario DuocUC</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <span>Biblioteca</span><span>DuocUC</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="catalogo.html" class="active">Inventario</a></li>
+                <li><a href="reservas.html">Reservar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Administración de Materiales</h2>
+
+        <!-- Formulario Agregar/Editar -->
+        <div class="form-card">
+            <h3>Registrar Nuevo Material</h3>
+            <form id="form-material">
+                <input type="hidden" id="mat-id">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Título del Material</label>
+                        <input type="text" id="mat-titulo" placeholder="Ej: Física Universitaria" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Autor</label>
+                        <input type="text" id="mat-autor" placeholder="Ej: Serway" required>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select id="mat-tipo">
+                            <option value="1">Libro</option>
+                            <option value="2">Revista</option>
+                            <option value="3">Tesis</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock (Copias Físicas)</label>
+                        <input type="number" id="mat-stock" min="0" required>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 10px;">
+                    <button type="button" class="btn" onclick="limpiarForm()" style="margin-right: 10px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Listado -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Disponibilidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+      // --- CONEXIÓN REAL A PYTHON (FLASK) ---
+        
+      // 1. Función para cargar Stats (2 préstamos, 1 reserva, etc.)
+      async function cargarStats() {
+        try {
+          const res = await fetch('/api/stats');
+          const data = await res.json();
+          // Actualizar los números en el HTML
+          document.querySelector('.stat:nth-child(1) strong').innerText = data.prestamos;
+          document.querySelector('.stat:nth-child(2) strong').innerText = data.reservas;
+        } catch (e) { console.error("Error cargando stats", e); }
+      }
+  
+      // 2. Función para cargar Top 5
+      async function cargarTop5() {
+        try {
+          const res = await fetch('/api/top_materiales');
+          const libros = await res.json();
+          const lista = document.getElementById('screen-home').querySelector('.list');
+          lista.innerHTML = ''; // Limpiar HTML viejo
+        
+          libros.forEach(libro => {
+            const html = `
+              <div class="card book">
+                <div class="cover">Top</div>
+                <div>
+                  <h3>${libro.titulo}</h3>
+                  <small>Solicitudes: ${libro.veces_prestado}</small>
+                </div>
+                <span class="tag ok">Ver detalle</span>
+              </div>`;
+            lista.innerHTML += html;
+          });
+        } catch (e) { console.error("Error cargando top", e); }
+      }
+  
+      // Ejecutar al cargar
+      window.onload = function() {
+        cargarStats();
+        cargarTop5();
+        // El código de navegación de pantallas (el viejo) se mantiene abajo:
+      };
+  
+      // --- TU CÓDIGO ANTIGUIO DE NAVEGACIÓN ---
+      const screens = { /* ... tu código anterior ... */ };
+      // (Asegúrate de mantener tu código de showScreen y toggleTheme aquí abajo)
+    </script>
+    <script>
+        function renderizarTabla() {
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = '';
+            
+            materiales.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--text-muted)">#${m.id}</td>
+                    <td style="color:white; font-weight:bold;">${m.titulo}</td>
+                    <td>${m.autor}</td>
+                    <td>
+                        <span style="color: ${m.stock > 0 ? '#4CAF50' : 'var(--brand-red)'}; font-weight:bold;">
+                            ${m.stock} Disp.
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="prepararEdicion(${m.id})">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminar(${m.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function limpiarForm() {
+            document.getElementById('form-material').reset();
+            document.getElementById('mat-id').value = '';
+        }
+
+        function prepararEdicion(id) {
+            const m = materiales.find(x => x.id === id);
+            document.getElementById('mat-id').value = m.id;
+            document.getElementById('mat-titulo').value = m.titulo;
+            document.getElementById('mat-autor').value = m.autor;
+            document.getElementById('mat-tipo').value = m.idtipo;
+            document.getElementById('mat-stock').value = m.stock;
+        }
+
+        function eliminar(id) {
+            if(confirm('¿Estás seguro de eliminar este material del sistema?')) {
+                eliminarMaterial(id);
+                renderizarTabla();
+            }
+        }
+
+        document.getElementById('form-material').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('mat-id').value;
+            const nuevo = {
+                titulo: document.getElementById('mat-titulo').value,
+                autor: document.getElementById('mat-autor').value,
+                idtipo: parseInt(document.getElementById('mat-tipo').value),
+                stock: parseInt(document.getElementById('mat-stock').value)
+            };
+
+            if(id) editarMaterial(parseInt(id), nuevo);
+            else agregarMaterial(nuevo);
+            
+            limpiarForm();
+            renderizarTabla();
+        });
+
+        renderizarTabla();
+    </script>
+</body>
+</html>
