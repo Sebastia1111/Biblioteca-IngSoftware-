@@ -382,21 +382,21 @@ flowchart TD
 <tr>
 <td align="center">
 <a href="https://github.com/Sebastia1111">
-<img src="https://github.com/tu-usuario.png" width="100" style="border-radius:50%"><br>
+<img src="https://github.com/Sebastia1111.png" width="100" style="border-radius:50%"><br>
 <strong>Sebastian Orellana</strong><br>
 <sub>Desarrollo Full Stack</sub>
 </a>
 </td>
 <td align="center">
 <a href="https://github.com/magdzuniga">
-<img src="https://github.com/tu-compañero.png" width="100" style="border-radius:50%"><br>
+<img src="https://github.com/magdzuniga.png" width="100" style="border-radius:50%"><br>
 <strong>Magdalena Zuñiga</strong><br>
 <sub>Documentación y CRUD</sub>
 </a>
 </td>
 <td align="center">
 <a href="https://github.com/feliduoc">
-<img src="https://github.com/tu-compañero2.png" width="100" style="border-radius:50%"><br>
+<img src="https://github.com/feliduoc.png" width="100" style="border-radius:50%"><br>
 <strong>Felipe Cea</strong><br>
 <sub>Diseño y Documentación</sub>
 </a>
