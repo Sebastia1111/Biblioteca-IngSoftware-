@@ -216,6 +216,30 @@ exit
 # 6. Ejecutar la aplicación
 python app.py
 ```
+### Segunda opción: usar Docker (recomendado)
+
+al tener docker instalado, no se necesita instalar python ni mariaDB.
+
+```bash
+# Levantar los contenedores (Descarga todo, crea la BD e inicia la app)
+docker-compose up -d --build
+```
+
+y ya. El sistema estará disponible en `http://localhost:5000/`.
+
+Para ver los logs en tiempo real:
+```bash
+docker-compose logs -f web
+```
+
+Para detener el sistema cuando se necesite:
+```bash
+docker-compose down
+```
+
+Y eso sería ya que docker descarga una "caja" con MariaDB puro, luego lee el `schema.sql` e `inserts.sql` y llena la base de datos **solito**.
+
+---
 
 ### Acceder al Sistema
 
