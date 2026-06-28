@@ -1,214 +1,424 @@
-<h1 align="center">Biblioteca Académica <br>REQUERIMIENTOS</h1> <br>
+<div align="center">
 
+# 📚 Biblioteca DuocUC
+
+**Sistema de Gestión Bibliotecaria Integral**
+
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-3.x-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
+[![MariaDB](https://img.shields.io/badge/MariaDB-11.x-003545?style=for-the-badge&logo=mariadb&logoColor=white)](https://mariadb.org) <br>
+
+*[Ingeniería de Software — DuocUC]*
+
+---
+
+<p align="center">
+  <img src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif" width="400" alt="Biblioteca Animation">
+</p>
+
+</div>
+
+## Descripción
+
+Sistema completo de gestión bibliotecaria desarrollado para la asignatura de Ingeniería de Software en DuocUC. Permite administrar el inventario de materiales, gestionar préstamos y devoluciones, y mantener un seguimiento detallado de las operaciones del mesón bibliográfico.
+
+### Características Principales
+
+| Módulo | Funcionalidades |
+|--------|-----------------|
+| 🔐 **Autenticación** | Login por RUT, sesiones seguras, roles diferenciados |
+| 📱 **Vista Estudiante** | Reservar libros, ver historial, buscar en catálogo |
+| 💻 **Vista Administrador** | Dashboard, CRUD materiales, gestión de préstamos |
+| 📊 **Estadísticas** | Materiales populares, contadores en tiempo real |
+| 🔔 **Alertas** | Sistema de notificaciones por vencimiento |
+| 📦 **Inventario** | Control de copias, estados, bajas y daños |
+
+---
+
+## Arquitectura del Sistema
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Arquitectura Cliente-Servidor                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                   Flask Backend (app.py)                 │  │
+│   │              mysql-connector-python + Sessions           │  │
+│   └──────────────────────────────┬───────────────────────────┘  │
+│                                  │                              │
+│                      ┌───────────┴───────────┐                  │
+│                      ▼                       ▼                  │
+│             ┌──────────────────┐    ┌──────────────────┐        │
+│             │   Vista Mobile   │    │   Vista Desktop  │        │
+│             │   (Estudiantes)  │    │   (Admin/Mesón)  │        │
+│             └──────────────────┘    └──────────────────┘        │
+│                                  │                              │
+│   ┌──────────────────────────────────────────────────────────┐  │
+│   │                   MariaDB / MySQL                        │  │
+│   │           6 tablas • Relaciones completas                │  │
+│   └──────────────────────────────────────────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Stack Tecnológico
+
+| Componente | Tecnología | Versión |
+|------------|------------|---------|
+| **Backend** | Python + Flask | 3.x / 3.x |
+| **Base de Datos** | MariaDB | 11.x |
+| **Conector BD** | mysql-connector-python | 8.x |
+| **Frontend** | HTML5 + CSS3 + JavaScript | ES6+ |
+| **Estilos** | CSS Custom Properties | - |
+| **Servidor** | Flask Development Server | - |
+
+---
+
+## Estructura del Proyecto
+
+```
+biblioteca-duocuc/
+│
+├── 📄 app.py                    # Backend principal (Flask)
+├── 📄 requirements.txt          # Dependencias Python
+├── 📄 README.md                 # Este archivo
+├── 📄 .gitignore                # Archivos ignorados por Git
+│
+├── 📁 database/                 # Scripts de base de datos
+│   ├── 📄 schema.sql            # Estructura de tablas
+│   └── 📄 inserts.sql           # Datos de prueba
+│
+├── 📁 static/                   # Archivos estáticos
+│   └── 📁 css/
+│       └── 📄 style.css         # Estilos globales
+│
+└── 📁 templates/                # Vistas HTML
+    ├── 📁 desktop/              # Interfaz de escritorio
+    │   ├── 📄 index.html        # Dashboard administrativo
+    │   ├── 📄 catalogo.html     # CRUD de materiales
+    │   └── 📄 prestamos.html    # Historial global de préstamos
+    │
+    └── 📁 mobile/               # Interfaz móvil
+        └── 📄 mobile.html       # App completa para estudiantes
+```
+
+---
+
+## Modelo de Datos
 
 ```mermaid
-graph TD
-    Repo((Biblioteca DuocUC))
-    
-    %% Archivos Raiz
-    Repo --> git[.gitignore]
-    Repo --> read[README.md]
-    Repo --> req[requirements.txt]
-    Repo --> app[app.py]
-    
-    %% Carpetas
-    Repo --> db(database)
-    Repo --> sta(static)
-    Repo --> tem(templates)
+erDiagram
+    tipo_usuario ||--o{ usuario : "tiene"
+    tipo_material ||--o{ material : "clasifica"
+    material ||--|{ copia : "tiene"
+    usuario ||--o{ prestamo : "realiza"
+    copia ||--o{ prestamo : "se usa en"
 
-    %% Contenido Database
-    db --> sql[schema.sql]
-    db --> ins[inserts.sql]
+    tipo_usuario {
+        int idtipousuario PK
+        string nombre
+    }
 
-    %% Contenido de static
-    sta --> css_dir(css)
-    css_dir --> css_file[style.css]
+    usuario {
+        string rut PK
+        string nombre
+        string correo
+        string password
+        int idtipousuario FK
+    }
 
-    %% Contenido de templates ordenado
-    tem --> desk(desktop)
-    tem --> mob_dir(mobile)
-    
-    desk --> ind[index.html]
-    desk --> cat[catalogo.html]
-    desk --> mis[mis_prestamos.html]
-    
-    mob_dir --> mob[mobile.html]
+    tipo_material {
+        int idtipo PK
+        string nombre
+        boolean activo
+    }
 
-    %% Estilos corregidos para compatibilidad con GitHub
-    classDef folder fill:#2c3e50,stroke:#34495e,stroke-width:2px,color:#fff;
-    classDef file fill:#ecf0f1,stroke:#bdc3c7,stroke-width:1px,color:#2c3e50;
-    
-    class db,sta,tem,desk,mob_dir folder;
-    class git,read,req,app,sql,ins,css_file,ind,cat,mis,mob file;
+    material {
+        int idmaterial PK
+        string titulo
+        string autor
+        int idtipo FK
+    }
 
+    copia {
+        int idcopia PK
+        int idmaterial FK
+        string estado
+    }
+
+    prestamo {
+        int idprestamo PK
+        string rut_usuario FK
+        int idcopia FK
+        date fecha_prestamo
+        date fecha_devolucion
+        string estado
+    }
 ```
 
+### Estados del Sistema
 
-
-# 1. Estructura BD
-
-```sql
-CREATE DATABASE IF NOT EXISTS biblioteca_duoc;
-USE biblioteca_duoc;
-
--- 1. Tipos de Usuario (Admin, Estudiante, etc.)
-CREATE TABLE IF NOT EXISTS tipo_usuario (
-    idtipousuario INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL
-);
-
--- 2. Usuarios / Alumnos
-CREATE TABLE IF NOT EXISTS usuario (
-    rut VARCHAR(12) PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    correo VARCHAR(150) NOT NULL, 
-    password VARCHAR(255) NOT NULL,
-    idtipousuario INT,
-    FOREIGN KEY (idtipousuario) REFERENCES tipo_usuario(idtipousuario)
-);
-
--- 3. Categorías / Tipos de Material
-CREATE TABLE IF NOT EXISTS tipo_material (
-    idtipo INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    activo TINYINT DEFAULT 1
-);
-
--- 4. Material Bibliográfico General
-CREATE TABLE IF NOT EXISTS material (
-    idmaterial INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(200) NOT NULL,
-    autor VARCHAR(150) NOT NULL,
-    idtipo INT,
-    FOREIGN KEY (idtipo) REFERENCES tipo_material(idtipo)
-);
-
--- 5. Copias o Ejemplares Físicos/Digitales
-CREATE TABLE IF NOT EXISTS copia (
-    idcopia INT AUTO_INCREMENT PRIMARY KEY,
-    idmaterial INT,
-    estado VARCHAR(50) DEFAULT 'Disponible', -- 'Disponible', 'Dañado', 'Baja'
-    FOREIGN KEY (idmaterial) REFERENCES material(idmaterial)
-);
-
--- 6. Historial de Préstamos
-CREATE TABLE IF NOT EXISTS prestamo (
-    idprestamo INT AUTO_INCREMENT PRIMARY KEY,
-    rut_usuario VARCHAR(12),
-    idcopia INT,
-    fecha_prestamo DATE,
-    fecha_devolucion DATE,
-    estado VARCHAR(50) DEFAULT 'Vigente', -- 'Vigente', 'Devuelto', 'Atrasado'
-    FOREIGN KEY (rut_usuario) REFERENCES usuario(rut),
-    FOREIGN KEY (idcopia) REFERENCES copia(idcopia)
-);
-```
----
-## 1.1 Insertar un Administrador y un Estudiante de prueba
-```sql
-USE biblioteca_duoc;
-
--- 1. Crear tipos (si no existen)
-INSERT INTO tipo_usuario (nombre) VALUES ('Administrador');
-INSERT INTO tipo_usuario (nombre) VALUES ('Estudiante');
-
--- 2. Crear usuarios de Prueba
--- NOTA: El password 'admin123' y '1234' son los que pusimos en el código Python
-
--- USUARIO ADMINISTRADOR
-INSERT INTO usuario (rut, nombre, clave, idtipousuario) 
-VALUES ('11111111-1', 'Admin Biblioteca', 'admin123', 1);
-
--- USUARIO ESTUDIANTE
-INSERT INTO usuario (rut, nombre, clave, idtipousuario) 
-VALUES ('22222222-2', 'Estudiante Duoc', '1234', 2);
-```
----
-# 2. Conexión con Python
-
-Para conectar HTML con Python y MariaDB:<br>
-> # Python:
-(Obvio, pero si el entorno es Windows, necesitamos descargarlo por python.org)<br>
-> # Flask:
-```console
-pip install flask
-```
-
-> # Conector MariaDB:
-```console
-pip install mysql-connector-python
-```
-<br>
+| Entidad | Estados | Descripción |
+|---------|---------|-------------|
+| **Copia** | `Disponible` | Lista para ser reservada |
+| | `Reservado` | Un alumno la reservó |
+| | `Prestado` | Entregada físicamente |
+| | `Dañado` | Fuera de circulación por daño |
+| | `Baja` | Dada de baja definitivamente |
+| **Préstamo** | `Reservado` | Esperando retiro en mesón |
+| | `Vigente` | En posesión del alumno (7 días) |
+| | `Atrasado` | Pasó la fecha de devolución |
+| | `Devuelto` | Devuelta correctamente |
 
 ---
-# Funcionalidad
-## ¿Cómo funcionará el sistema ahora?
-> MariaDB: esto guardará los datos reales<br>
-> Python: recibe las peticiones del html, consulta a MariaDB y devuelve el resultado en formato JSON <br>
-> HTML: obvio la parte visual, esto muestra los datos que le envió python <br>
----
 
-# Aplicación/Despliegue
-## Es necesario activar el entorno antes de usar activar el app.py:
-```console
-source venv/bin/activate
-```
+## Instalación y Configuración
 
-### y luego ya se puede usar la app:
-```console
+### Prerrequisitos
+
+- [Python 3.8+](https://python.org/downloads/)
+- [MariaDB 10.6+](https://mariadb.org/download/)
+- [Git](https://git-scm.com/downloads)
+
+### Pasos de Instalación
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/tu-usuario/biblioteca-duocuc.git
+cd biblioteca-duocuc
+
+# 2. Crear entorno virtual (recomendado)
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate   # Windows
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+
+# 4. Configurar base de datos
+# Iniciar sesión en MariaDB
+mysql -u root -p
+
+# Ejecutar scripts
+source database/schema.sql
+source database/inserts.sql
+exit
+
+# 5. Verificar conexión en app.py
+# Ajustar credenciales si es necesario:
+# host='127.0.0.1'
+# user='root'
+# password='tu_password'
+
+# 6. Ejecutar la aplicación
 python app.py
 ```
----
-<br>
 
-# SOLUCIONES
-## 1. Errores con venv
-Es común al parecer que hayan errores con esto ya que un archivo tan pesado como la carpeta _venv_ no se puede subir al repositorio<br>
-la visión que tengo de la carpeta creada en mi entorno se ve de la siguiente forma:
-```text
-BIBLIOTECA/
-  ├── app.py
-  ├── venv/ (se queda, pero no se sube a github)
-  ├── templates/
-  │    ├── index.html
-  │    ├── mobile.html
-  │    ├── catalogo.html
-  │    └── mis_prestamos.html
-  └── static/
-       └── style.css
-```
-Al no ser posible Uplodear los archivos en github de esta forma, lo que hice fue lo siguiente (MUY IMPORTANTE)<br>
-#### Creé un archivo llamado .gitinore, el cual posee lo siguiente adentro:
-```text
-venv/
-__pycache__/
-*.pyc
-.DS_Store
-```
-Esto evita que tenga que subir la carpeta venv (que ocupa mucho espacio) o archivos temporales de Python
+### Acceder al Sistema
 
-
-
-
-
-
+| Vista | URL | Descripción |
+|-------|-----|-------------|
+| 🖥️ Desktop | `http://localhost:5000/` | Panel de administración |
+| 📱 Mobile | `http://localhost:5000/m` | App para estudiantes |
 
 ---
 
-# Instalación
-(para facilitarle la vida otras personas)
-### 1. Crear entorno virtual:
-   `python -m venv venv` <br>
-   `source venv/bin/activate` (Linux) o `venv\Scripts\activate` (Windows)
+## 👤 Credenciales de Prueba
 
-### 2. Instalar dependencias:
-   `pip install -r requirements.txt`
+| Rol | RUT | Contraseña | Nombre |
+|-----|-----|------------|--------|
+| 🔴 Administrador | `22130895-6` | `ad####23` | Sebastian Orellana |
+| 🟢 Estudiante | `22163627-9` | `m###a` | Magdalena Zuñiga |
+| 🟢 Estudiante | `22182484-9` | `fe######as` | Felipe Cea |
 
-### 3. Configurar Base de Datos:
-Ejecuta el script SQL en MariaDB para crear la tabla `biblioteca_duoc`.
+---
 
-### 4. Ejecutar aplicación:
-   `python app.py`
-   Ir a http://localhost:5000/m
+## 🔌 API Endpoints
+
+### Autenticación
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `POST` | `/api/login` | Iniciar sesión |
+| `POST` | `/api/logout` | Cerrar sesión |
+
+### Estudiante (Mobile)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/api/resumen_usuario` | Obtener catálogo y contadores |
+| `POST` | `/api/resumen_usuario` | Reservar un libro |
+| `GET` | `/api/mis_prestamos` | Historial personal |
+| `POST` | `/api/devolver` | Devolver libro |
+
+### Administrador (Desktop)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/api/stats` | Estadísticas generales |
+| `GET` | `/api/admin/top_materiales` | Materiales más solicitados |
+| `GET` | `/api/admin/ver_reservas` | Reservas pendientes |
+| `POST` | `/api/admin/entregar_libro` | Entregar libro reservado |
+| `POST` | `/api/admin/todos_prestamos` | Historial completo |
+| `POST` | `/api/admin/inventario` | Cambiar estado de copia |
+| `POST` | `/api/admin/transaccion/prestamo` | Préstamo manual |
+| `POST` | `/api/admin/transaccion/devolucion` | Devolución manual |
+| `POST` | `/api/simular_alerta_vencimiento` | Enviar alerta |
+
+### CRUD Categorías
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/api/categorias` | Listar categorías |
+| `POST` | `/api/categorias` | Crear categoría |
+| `PUT` | `/api/categorias/<id>` | Editar categoría |
+| `POST` | `/api/categorias/<id>/toggle` | Activar/Desactivar |
+
+### CRUD Materiales
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `GET` | `/api/material` | Listar con stock |
+| `POST` | `/api/material` | Crear material + copias |
+| `PUT` | `/api/material/<id>` | Editar material |
+| `DELETE` | `/api/material/<id>` | Eliminar material |
+
+---
+
+## Capturas del Sistema
+
+### Vista Móvil - Estudiante
+<table>
+<tr>
+<td align="center">
+<strong>🔐 Login</strong><br>
+<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Login" alt="Login" width="200">
+</td>
+<td align="center">
+<strong>🏠 Dashboard</strong><br>
+<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Dashboard" alt="Dashboard" width="200">
+</td>
+<td align="center">
+<strong>🔍 Búsqueda</strong><br>
+<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Busqueda" alt="Búsqueda" width="200">
+</td>
+</tr>
+<tr>
+<td align="center">
+<strong>📖 Detalle</strong><br>
+<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Detalle" alt="Detalle" width="200">
+</td>
+<td align="center">
+<strong>📚 Mi Ficha</strong><br>
+<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Mi+Ficha" alt="Mi Ficha" width="200">
+</td>
+<td align="center">
+<strong>⚙️ Admin</strong><br>
+<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Admin" alt="Admin" width="200">
+</td>
+</tr>
+</table>
+
+### Vista Desktop - Administrador
+<table>
+<tr>
+<td align="center">
+<strong>🏠 Dashboard</strong><br>
+<img src="https://via.placeholder.com/500x300/1A1A1A/FFC20E?text=Dashboard+Admin" alt="Dashboard Admin" width="400">
+</td>
+</tr>
+<tr>
+<td align="center">
+<strong>📦 Inventario</strong><br>
+<img src="https://via.placeholder.com/500x300/1A1A1A/FFC20E?text=CRUD+Materiales" alt="CRUD Materiales" width="400">
+</td>
+</tr>
+<tr>
+<td align="center">
+<strong>📋 Préstamos</strong><br>
+<img src="https://via.placeholder.com/500x300/1A1A1A/FFC20E?text=Historial+Prestamos" alt="Historial Préstamos" width="400">
+</td>
+</tr>
+</table>
+
+---
+
+## 🔄 Flujo de Operaciones
+
+```mermaid
+flowchart TD
+    A[🟢 Estudiante] --> B[Reserva libro en Mobile]
+    B --> C[Estado: Reservado]
+    C --> D[🔴 Admin ve reserva pendiente]
+    D --> E[Admin entrega libro]
+    E --> F[Estado: Vigente + 7 días plazo]
+    F --> G{¿Devuelve a tiempo?}
+    G -- Sí --> H[Estado: Devuelto ✅]
+    G -- No --> I[Estado: Atrasado ❌]
+    I --> J[Admin envía alerta]
+    J --> H
+```
+
+---
+
+## Requerimientos Cubiertos
+
+| # | Requerimiento | Estado |
+|---|---------------|--------|
+| 1 | CRUD Tipos de Libro | ✅ Completo |
+| 2 | Actualización de Inventario | ✅ Completo |
+| 3 | Reserva de Materiales (máx. 3, válida 2 días)* | ✅ Parcial |
+| 4 | Préstamo y Devolución de Libros | ✅ Completo |
+| 5 | Consulta Materiales Populares | ✅ Completo |
+| 6 | Ficha de Usuario (prestados/no devueltos/devueltos) | ✅ Completo |
+| 7 | Consulta Materiales Atrasados y No Atrasados | ✅ Completo |
+
+*La expiración automática a los 2 días es una mejora futura opcional.
+
+---
+
+## 👥 Desarrolladores
+
+<div align="center">
+<table>
+<tr>
+<td align="center">
+<a href="https://github.com/Sebastia1111">
+<img src="https://github.com/tu-usuario.png" width="100" style="border-radius:50%"><br>
+<strong>Sebastian Orellana</strong><br>
+<sub>Desarrollo Full Stack</sub>
+</a>
+</td>
+<td align="center">
+<a href="https://github.com/magdzuniga">
+<img src="https://github.com/tu-compañero.png" width="100" style="border-radius:50%"><br>
+<strong>Magdalena Zuñiga</strong><br>
+<sub>Documentación y CRUD</sub>
+</a>
+</td>
+<td align="center">
+<a href="https://github.com/feliduoc">
+<img src="https://github.com/tu-compañero2.png" width="100" style="border-radius:50%"><br>
+<strong>Felipe Cea</strong><br>
+<sub>Diseño y Documentación</sub>
+</a>
+</td>
+</tr>
+</table>
+</div>
+
+---
+
+## 📄 Licencia
+
+Este proyecto fue desarrollado con fines **educativos** como parte de la asignatura de Ingeniería de Software en DuocUC.
+
+<div align="center">
+
+**Hecho con ❤️ para DuocUC**
+
+<p>
+<img src="https://img.shields.io/badge/Ingeniería_de_Software-2026-FFC20E?style=for-the-badge">
+</p>
+
+</div>
 
 ---
