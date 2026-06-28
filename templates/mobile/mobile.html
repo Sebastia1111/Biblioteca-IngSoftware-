@@ -25,14 +25,14 @@
     .statusbar {
       display:flex; justify-content:space-between; align-items:center; padding:14px 24px 4px; font-size:12px; color:var(--muted); font-weight: 500;
     }
-    .screen { display:none; padding:20px 20px 120px; height:calc(100% - 40px); overflow-y:auto; opacity: 0; }
+    .screen { display:none; padding:20px 20px 120px; height:calc(100% - 40px); overflow-y:auto; opacity: 0; transform: translateY(10px); }
     .screen.active { display:block; animation: fadeIn 0.3s ease forwards; }
     
     @keyframes fadeIn {
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .hero-card, .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 6px 14px rgba(0,0,0,.02); }
+    .hero-card, .card { background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:0 6px 14px rgba(0,0,0,.02); }
     .hero-card { padding:22px; background:linear-gradient(180deg, color-mix(in srgb, var(--surface) 85%, var(--primary) 15%), var(--surface)); }
     .eyebrow { color:var(--primary); font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
     h1, h2, h3, h4 { margin:0; }
@@ -60,7 +60,8 @@
     
     .section-title { display:flex; justify-content:space-between; align-items:center; margin:24px 0 12px; }
     .list { display:grid; gap:12px; }
-    .book { padding:14px; display:grid; grid-template-columns:62px 1fr auto; gap:12px; align-items:center; }
+    .book { padding:14px; display:grid; grid-template-columns:62px 1fr auto; gap:12px; align-items:center; cursor: pointer; }
+    .book:active { background: var(--surface-2); border-radius: 18px; }
     .cover {
       width:62px; height:86px; border-radius:12px; background:linear-gradient(160deg, var(--primary), var(--primary-2));
       display:grid; place-items:center; color:white; font-weight:700; font-size:11px; text-align:center; padding:8px;
@@ -68,16 +69,20 @@
     .book h3 { font-size:15px; margin-bottom:4px; font-weight: 600; }
     .book small { display:block; color:var(--muted); line-height:1.4; }
     
-    .tag { font-size:11px; font-weight:700; padding:6px 12px; border-radius:999px; text-align: center; }
+    .tag { font-size:11px; font-weight:700; padding:6px 12px; border-radius:999px; text-align: center; white-space: nowrap; }
     .tag.ok { background:rgba(67,122,34,.12); color:var(--success); }
     .tag.warn { background:rgba(150,66,25,.12); color:var(--warning); }
     .tag.danger { background:rgba(161,53,68,.12); color:var(--danger); }
+    .tag.disabled { background:var(--surface-2); color:var(--muted); cursor: default; }
+    .tag.clickable { cursor: pointer; }
+    .tag.clickable:active { transform: scale(0.95); }
     
     .primary-btn, .secondary-btn, .danger-btn {
       width:100%; border:none; padding:14px 18px; border-radius:18px; font-weight:700; font-size:14px; cursor:pointer; display: inline-flex; justify-content: center; align-items: center; gap: 6px;
     }
     .primary-btn { background:var(--primary); color:white; box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent); }
     .primary-btn:active { transform: scale(0.98); }
+    .primary-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     .secondary-btn { background:var(--surface-2); color:var(--text); border:1px solid var(--border); }
     .danger-btn { background: rgba(161,53,68,0.1); color: var(--danger); border: 1px solid rgba(161,53,68,0.2); }
     
@@ -91,6 +96,21 @@
     
     .detail { padding:18px; }
     .detail-grid { display:grid; gap:12px; }
+    .detail-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
+    .detail-row:last-child { border-bottom:none; }
+    .detail-label { color:var(--muted); font-size:13px; }
+    .detail-value { font-weight:600; font-size:13px; text-align: right; }
+    
+    /* Copias en detalle */
+    .copias-list { margin-top: 16px; }
+    .copia-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 14px; background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 14px; margin-bottom: 8px;
+    }
+    .copia-info { display: flex; align-items: center; gap: 10px; }
+    .copia-id { font-weight: 700; font-size: 13px; color: var(--text); }
+    .copia-estado { font-size: 11px; }
     
     .kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .kpi { padding:16px; border-radius:18px; background:var(--surface-2); border:1px solid var(--border); }
@@ -118,9 +138,8 @@
     .logout-btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; background: rgba(161,53,68,0.1); color: var(--danger); border: none; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
     .notice { padding:14px 16px; border-radius:18px; background:color-mix(in srgb, var(--primary) 10%, var(--surface)); border:1px solid var(--border); font-size: 13px; line-height: 1.4; }
     
-    /* MEJORAS EXCLUSIVAS SUB-PANEL ADMIN */
     .admin-menu-grid { display:grid; gap:12px; }
-    .admin-menu-item { padding:16px; text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .admin-menu-item { padding:16px; text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     .admin-menu-item:active { background: var(--surface-2); }
     .sub-view { display: none; }
     .sub-view.active { display: block; }
@@ -128,12 +147,18 @@
     .table-list th, .table-list td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; font-size: 13px; }
     .table-list th { color: var(--muted); text-transform: uppercase; font-size: 11px; }
     .error-msg { color:var(--danger); font-size:13px; font-weight:600; margin-bottom:14px; display:none; padding: 10px; background: rgba(161,53,68,0.08); border-radius: 10px; text-align: center; }
+    .success-msg { color:var(--success); font-size:13px; font-weight:600; margin-bottom:14px; display:none; padding: 10px; background: rgba(67,122,34,0.08); border-radius: 10px; text-align: center; }
+    .loading-msg { color:var(--muted); font-size:13px; text-align:center; padding:20px; }
+    .empty-state { text-align:center; padding: 40px 20px; color: var(--muted); }
+    .empty-state span { font-size: 32px; display: block; margin-bottom: 10px; }
+    .stock-indicator { font-size: 12px; color: var(--muted); margin-top: 2px; }
   </style>
 </head>
 <body>
-  <div class="shell" role="application" aria-label="Prototipo móvil de biblioteca">
-    <div class="statusbar"><span>06:07</span><span>***</span><span>67%</span></div>
+  <div class="shell" role="application" aria-label="App móvil de biblioteca">
+    <div class="statusbar"><span id="clock">06:07</span><span>***</span><span>67%</span></div>
 
+    <!--   LOGIN   -->
     <section class="screen active" id="screen-login">
       <div class="header-inline" style="margin-top: 40px; margin-bottom: 35px;">
         <div>
@@ -152,13 +177,14 @@
       </div>
     </section>
 
+    <!--   HOME   -->
     <section class="screen" id="screen-home">
       <div class="header-inline">
         <div>
           <div class="eyebrow" id="user-role-label">Estudiante</div>
           <h1 id="user-welcome-label">Tu biblioteca</h1>
         </div>
-        <button class="logout-btn" onclick="cerrarSesion()">Cerrar Sesión</button>
+        <button class="logout-btn" onclick="cerrarSesion()">Salir</button>
       </div>
       <div class="hero-card">
         <p class="muted" style="font-size: 13px; margin-bottom: 4px;">Resumen general de tu cuenta</p>
@@ -168,7 +194,7 @@
           <div class="stat"><strong id="home-count-atrasos">0</strong><span class="muted" style="font-size:11px;">Atrasos</span></div>
         </div>
         <div class="space"></div>
-        <div class="notice" id="home-notice-box">No registras alertas pendientes actualmente.</div>
+        <div class="notice" id="home-notice-box">No registras alertas pendientes.</div>
       </div>
       <div class="search" onclick="showScreen('search'); cargarCatalogoReal();">
         <span>🔎</span>
@@ -176,33 +202,24 @@
       </div>
     </section>
 
+    <!--   BÚSQUEDA   -->
     <section class="screen" id="screen-search">
       <div class="header-inline">
         <div>
           <div class="eyebrow">Búsqueda</div>
-          <h2>Material Bibliográfico</h2>
+          <h2>Catálogo</h2>
         </div>
       </div>
       <div class="form-card card">
         <label for="busqueda">Filtrar material</label>
-        <!-- Agregamos un oninput para que filtre de verdad más adelante si quieres -->
-        <input id="busqueda" placeholder="Buscar libro..." oninput="filtrarCatalogoReal()" />
+        <input id="busqueda" placeholder="Buscar material..." oninput="filtrarCatalogoReal()" />
         <div class="row wrap"><span class="pill primary">Filtro Inteligente</span></div>
       </div>
-      <div class="section-title"><h2>Resultados PROBANDO</h2></div>
-      
-      <div class="list" id="contenedor-libros">
-        <div class="card book" style="border: 2px solid var(--primary);">
-          <div class="cover">TEST</div>
-          <div>
-            <h3>Libro de Prueba Visual</h3>
-            <small>Si ves esto, el CSS está bien y el problema es 100% el script</small>
-          </div>
-          <span class="tag ok">Ver</span>
-        </div>
-      </div>
+      <div class="section-title"><h2>Resultados</h2><span class="muted" id="result-count"></span></div>
+      <div class="list" id="contenedor-libros"></div>
     </section>
 
+    <!--   DETALLE CON COPIAS   -->
     <section class="screen" id="screen-detail">
       <div class="header-inline">
         <div>
@@ -211,13 +228,12 @@
         </div>
         <button class="secondary-btn" style="width:auto;padding:10px 12px;" onclick="showScreen('search')">Volver</button>
       </div>
-      
-      <!-- MODIFICAMOS ESTA CARD PARA QUE REACCIONE AL LIBRO CLICKEADO -->
       <div class="card detail" id="bloque-detalle">
-        <!-- Se rellenará dinámicamente al hacer clic en un libro -->
+        <p class="loading-msg">Cargando detalle...</p>
       </div>
     </section>
 
+    <!--   MI FICHA   -->
     <section class="screen" id="screen-loans">
       <div class="header-inline">
         <div>
@@ -229,11 +245,13 @@
         <div class="kpi"><strong id="kpi-total-prestamos">0</strong><span class="muted">Total histórico</span></div>
         <div class="kpi"><strong id="kpi-vigentes" style="color:var(--success);">0</strong><span class="muted">Vigentes</span></div>
       </div>
-      <div class="section-title"><h2>Mis Libros en Posesión</h2></div>
+      <div class="section-title"><h2>Mis Libros</h2></div>
       <div class="list" id="lista-prestamos-reales"></div>
     </section>
 
+    <!--   ADMIN   -->
     <section class="screen" id="screen-admin">
+      
       <div id="admin-main-menu" class="sub-view active">
         <div class="header-inline">
           <div>
@@ -242,22 +260,25 @@
           </div>
           <span class="pill primary">Estación</span>
         </div>
-        
         <div class="admin-menu-grid">
-          <div class="admin-menu-item" onclick="openAdminSubView('view-categories')">
-            <div><strong>🗂️ Categorías de Material</strong><p class="muted" style="font-size:12px;">Libro, revista, tesis, digital...</p></div>
+          <div class="admin-menu-item" onclick="openAdminSubView('view-categories'); cargarCategoriasBD();">
+            <div><strong>🗂️ Categorías</strong><p class="muted" style="font-size:12px;">Tipos de material</p></div>
+            <span>❯</span>
+          </div>
+          <div class="admin-menu-item" onclick="openAdminSubView('view-reservas'); cargarReservasAdmin();">
+            <div><strong>📋 Reservas Pendientes</strong><p class="muted" style="font-size:12px;">Entregar libros</p></div>
             <span>❯</span>
           </div>
           <div class="admin-menu-item" onclick="openAdminSubView('view-inventory')">
-            <div><strong>📦 Actualización de Inventario</strong><p class="muted" style="font-size:12px;">Ajustar stock, bajas y daños</p></div>
+            <div><strong>📦 Inventario</strong><p class="muted" style="font-size:12px;">Ajustar stock y estados</p></div>
             <span>❯</span>
           </div>
           <div class="admin-menu-item" onclick="openAdminSubView('view-transactions')">
-            <div><strong>🔄 Préstamo y Devolución</strong><p class="muted" style="font-size:12px;">Registrar movimientos en mesón</p></div>
+            <div><strong>🔄 Transacciones</strong><p class="muted" style="font-size:12px;">Préstamo/Devolución manual</p></div>
             <span>❯</span>
           </div>
-          <div class="admin-menu-item" onclick="openAdminSubView('view-ranking')">
-            <div><strong>📊 Materiales Más Pedidos</strong><p class="muted" style="font-size:12px;">Ranking de reposición mensual</p></div>
+          <div class="admin-menu-item" onclick="openAdminSubView('view-ranking'); cargarRankingBD();">
+            <div><strong>📊 Más Pedidos</strong><p class="muted" style="font-size:12px;">Ranking de materiales</p></div>
             <span>❯</span>
           </div>
         </div>
@@ -268,25 +289,28 @@
           <h2>Categorías</h2>
           <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
         </div>
-        
         <div class="form-card card">
-          <label id="form-cat-title">Agregar / Editar Tipo</label>
+          <label>Agregar Nuevo Tipo</label>
           <input id="input-cat-nombre" type="text" placeholder="Ej: Material Digital" />
-          <div class="row">
-            <button class="primary-btn" onclick="guardarCategoria()">Guardar</button>
-            <button class="secondary-btn" onclick="limpiarFormCategoria()">Limpiar</button>
-          </div>
+          <div id="cat-success" class="success-msg"></div>
+          <button class="primary-btn" onclick="guardarCategoria()">Guardar Categoría</button>
         </div>
-
         <table class="table-list">
           <thead><tr><th>Nombre</th><th>Estado</th><th>Acción</th></tr></thead>
           <tbody id="tabla-categorias-body">
-            <tr><td>Libro</td><td><span class="tag ok">Activo</span></td><td><button class="danger-btn" style="padding:4px 8px;font-size:11px;">Desactivar</button></td></tr>
-            <tr><td>Revista</td><td><span class="tag ok">Activo</span></td><td><button class="danger-btn" style="padding:4px 8px;font-size:11px;">Desactivar</button></td></tr>
-            <tr><td>Tesis</td><td><span class="tag ok">Activo</span></td><td><button class="danger-btn" style="padding:4px 8px;font-size:11px;">Desactivar</button></td></tr>
-            <tr><td>Material Digital</td><td><span class="tag danger">Inactivo</span></td><td><button class="primary-btn" style="padding:4px 8px;font-size:11px;box-shadow:none;">Activar</button></td></tr>
+            <tr><td colspan="3" class="loading-msg">Cargando...</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div id="view-reservas" class="sub-view">
+        <div class="header-inline">
+          <h2>Reservas Pendientes</h2>
+          <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
+        </div>
+        <div class="list" id="lista-reservas-admin">
+          <p class="loading-msg">Cargando reservas...</p>
+        </div>
       </div>
 
       <div id="view-inventory" class="sub-view">
@@ -296,30 +320,34 @@
         </div>
         <div class="form-card card">
           <label>ID Copia / Ejemplar</label>
-          <input type="number" placeholder="Ej: 104" />
-          <label>Acción / Estado de stock</label>
-          <select>
-            <option value="disponible">Disponible (Ajustar Stock)</option>
-            <option value="danado">Registrar como Dañado</option>
-            <option value="baja">Dar de Baja Definitiva</option>
+          <input id="inv-idcopia" type="number" placeholder="Ej: 1" />
+          <label>Acción</label>
+          <select id="inv-estado">
+            <option value="Disponible">Disponible</option>
+            <option value="Dañado">Registrar como Dañado</option>
+            <option value="Baja">Dar de Baja</option>
           </select>
-          <button class="primary-btn">Aplicar Cambios</button>
+          <div id="inv-success" class="success-msg"></div>
+          <div id="inv-error" class="error-msg"></div>
+          <button class="primary-btn" onclick="actualizarInventario()">Aplicar Cambio</button>
         </div>
       </div>
 
       <div id="view-transactions" class="sub-view">
         <div class="header-inline">
-          <h2>Movimientos</h2>
+          <h2>Transacciones</h2>
           <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
         </div>
         <div class="form-card card">
           <label>RUT del Alumno</label>
-          <input type="text" placeholder="11111111-1" />
+          <input id="tx-rut" type="text" placeholder="11111111-1" />
           <label>ID Copia del Material</label>
-          <input type="number" placeholder="Ej: 45" />
+          <input id="tx-idcopia" type="number" placeholder="Ej: 1" />
+          <div id="tx-success" class="success-msg"></div>
+          <div id="tx-error" class="error-msg"></div>
           <div class="row">
-            <button class="primary-btn" style="background:var(--success);">Préstamo</button>
-            <button class="primary-btn" style="background:var(--primary-2);">Devolución</button>
+            <button class="primary-btn" style="background:var(--success);box-shadow:none;" onclick="transaccionPrestamo()">Préstamo</button>
+            <button class="primary-btn" style="background:var(--primary-2);box-shadow:none;" onclick="transaccionDevolucion()">Devolución</button>
           </div>
         </div>
       </div>
@@ -329,29 +357,26 @@
           <h2>Más Pedidos</h2>
           <button class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="closeAdminSubView()">Volver</button>
         </div>
-        <p class="muted" style="font-size:13px; margin-bottom:12px;">Apoyo técnico a reposición:</p>
-        <div class="list">
-          <div class="card" style="padding:12px; display:flex; justify-content:space-between;">
-            <span><strong>1. Python para Desarrollo</strong><br><small class="muted">Libro Físico</small></span>
-            <span class="tag ok">42 Pedidos</span>
-          </div>
-          <div class="card" style="padding:12px; display:flex; justify-content:space-between;">
-            <span><strong>2. Scrum Guía Ágil</strong><br><small class="muted">Material Digital</small></span>
-            <span class="tag ok">29 Pedidos</span>
-          </div>
+        <p class="muted" style="font-size:13px; margin-bottom:12px;">Apoyo técnico para reposición:</p>
+        <div class="list" id="lista-ranking">
+          <p class="loading-msg">Cargando ranking...</p>
         </div>
       </div>
+
     </section>
 
     <nav class="bottom-nav" id="main-nav" aria-label="Navegación principal">
       <button class="nav-item active" data-screen="home"><span class="nav-icon icon-home"></span><span>Inicio</span></button>
       <button class="nav-item" data-screen="search"><span class="nav-icon icon-search"></span><span>Buscar</span></button>
       <button class="nav-item" data-screen="loans"><span class="nav-icon icon-book"></span><span>Mi ficha</span></button>
-      <button class="nav-item" data-screen="admin" id="nav-admin-tab" onclick="closeAdminSubView()"><span class="nav-icon icon-user"></span><span>Admin</span></button>
+      <button class="nav-item" data-screen="admin" id="nav-admin-tab" style="display:none;"><span class="nav-icon icon-user"></span><span>Admin</span></button>
     </nav>
   </div>
 
   <script>
+    //   VARIABLES GLOBALES  
+    let librosCargados = [];
+    
     const screens = {
       login: document.getElementById('screen-login'),
       home: document.getElementById('screen-home'),
@@ -365,41 +390,31 @@
     const mainNav = document.getElementById('main-nav');
     const adminTab = document.getElementById('nav-admin-tab');
 
-    // Función unificada que apaga pantallas y enciende la seleccionada
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent = now.toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'});
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    //   NAVEGACIÓN  
     function showScreen(name) {
-      Object.values(screens).forEach(screen => {
-        if (screen) screen.classList.remove('active');
-      });
-      
-      if (screens[name]) {
-        screens[name].classList.add('active');
-      }
-      
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      if (screens[name]) screens[name].classList.add('active');
       navItems.forEach(item => item.classList.toggle('active', item.dataset.screen === name));
     }
 
-    // CONTROL CENTRAL DE CLICS: Quitamos los onclick conflictivos del HTML
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const destino = item.dataset.screen;
-        
-        // 1. Cambiamos de pantalla primero que todo
         showScreen(destino);
-        
-        // 2. Si va a buscar, gatilla la función de carga al instante
-        if (destino === 'search') {
-          cargarCatalogoReal();
-        }
-        
-        // 3. Si va a préstamos, gatilla la ficha
-        if (destino === 'loans') {
-          cargarFichaCompletaBD();
-        }
+        if (destino === 'search') cargarCatalogoReal();
+        if (destino === 'loans') cargarFichaCompletaBD();
+        if (destino === 'admin') closeAdminSubView();
       });
     });
 
-
-    // CONTROLADORES INTERNOS PANEL ADMIN
+    //   ADMIN SUB-VIEWS  
     function openAdminSubView(viewId) {
       document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
@@ -410,36 +425,25 @@
       document.getElementById('admin-main-menu').classList.add('active');
     }
 
-    // SIMULACIÓN O LLAMADOS DE MANTENEDOR CATEGORÍAS
-    function guardarCategoria() {
-      const txt = document.getElementById('input-cat-nombre').value.trim();
-      if(!txt) return alert("Escribe un nombre de tipo de material");
-      
-      // Aquí harás el fetch('/api/categorias', {method:'POST'...}) a Flask
-      alert(`Enviando a MariaDB para guardar tipo: ${txt}`);
-      limpiarFormCategoria();
-    }
-
-    function limpiarFormCategoria() {
-      document.getElementById('input-cat-nombre').value = "";
-    }
-
-    // CONSUMO INTEGRAL DE DATOS REALES DE MARIADB
-
+    //   LOGIN  
     async function procesarLogin() {
       const rut = document.getElementById('input-rut').value.trim();
       const password = document.getElementById('input-password').value;
       const errorDiv = document.getElementById('login-error');
-
       errorDiv.style.display = 'none';
+
+      if (!rut || !password) {
+        errorDiv.innerText = "Completa todos los campos";
+        errorDiv.style.display = 'block';
+        return;
+      }
 
       try {
         const response = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rut: rut, password: password })
+          body: JSON.stringify({ rut, password })
         });
-
         const resultado = await response.json();
 
         if (resultado.success) {
@@ -452,10 +456,8 @@
             adminTab.style.display = "none";
             mainNav.classList.remove('admin-mode');
           }
-
           document.getElementById('user-welcome-label').innerText = `¡Hola, ${resultado.nombre}!`;
-          mainNav.style.display = "grid"; 
-
+          mainNav.style.display = "grid";
           await cargarResumenBD();
           showScreen('home');
         } else {
@@ -463,11 +465,21 @@
           errorDiv.style.display = 'block';
         }
       } catch (error) {
-        errorDiv.innerText = "Error crítico de comunicación con Flask.";
+        errorDiv.innerText = "Error de conexión con el servidor";
         errorDiv.style.display = 'block';
       }
     }
 
+    async function cerrarSesion() {
+      try { await fetch('/api/logout', { method: 'POST' }); } catch (e) {}
+      document.getElementById('input-rut').value = "";
+      document.getElementById('input-password').value = "";
+      mainNav.style.display = "none";
+      librosCargados = [];
+      showScreen('login');
+    }
+
+    //   RESUMEN HOME  
     async function cargarResumenBD() {
       try {
         const response = await fetch('/api/resumen_usuario');
@@ -479,200 +491,509 @@
 
           const noticeBox = document.getElementById('home-notice-box');
           if (data.atrasos > 0) {
-            noticeBox.innerHTML = `⚠️ Tienes <strong>${data.atrasos} libro(s) atrasado(s)</strong>. Acércate al mesón de la biblioteca lo antes posible.`;
+            noticeBox.innerHTML = `⚠️ Tienes <strong>${data.atrasos} libro(s) atrasado(s)</strong>. Acércate al mesón.`;
             noticeBox.style.background = "rgba(161,53,68,0.1)";
           } else if (data.prestamos > 0) {
-            noticeBox.innerHTML = `📘 Cuentas con <strong>${data.prestamos} libro(s)</strong> vigentes en tu ficha para lectura.`;
+            noticeBox.innerHTML = `📘 Tienes <strong>${data.prestamos} libro(s)</strong> vigentes.`;
             noticeBox.style.background = "color-mix(in srgb, var(--primary) 10%, var(--surface))";
           } else {
-            noticeBox.innerText = "No registras alertas pendientes actualmente.";
+            noticeBox.innerText = "No registras alertas pendientes.";
             noticeBox.style.background = "var(--surface-2)";
           }
         }
       } catch (error) {
-        console.error("Error al cargar resumen:", error);
+        console.error("Error cargando resumen:", error);
       }
     }
 
+    //   CATÁLOGO AGRUPADO (  
+    async function cargarCatalogoReal() {
+      const contenedor = document.getElementById('contenedor-libros');
+      contenedor.innerHTML = '<p class="loading-msg">Cargando catálogo...</p>';
+      document.getElementById('result-count').textContent = '';
+
+      try {
+        const response = await fetch('/api/catalogo_agrupado');
+        if (response.ok) {
+          const data = await response.json();
+          librosCargados = data.libros || [];
+          renderizarLibros(librosCargados);
+        } else {
+          contenedor.innerHTML = '<p class="error-msg" style="display:block;">Error al cargar catálogo</p>';
+        }
+      } catch (e) {
+        contenedor.innerHTML = '<p class="error-msg" style="display:block;">Error de conexión</p>';
+      }
+    }
+
+    function renderizarLibros(lista) {
+      const contenedor = document.getElementById('contenedor-libros');
+      document.getElementById('result-count').textContent = `${lista.length} resultado(s)`;
+      
+      if (lista.length === 0) {
+        contenedor.innerHTML = '<div class="empty-state"><span>📭</span><p>No se encontraron materiales.</p></div>';
+        return;
+      }
+
+      contenedor.innerHTML = '';
+      lista.forEach(libro => {
+        const disponibles = libro.copias_disponibles || 0;
+        const total = libro.total_copias || 0;
+        
+        let tagClass = 'ok';
+        let tagText = `${disponibles} disp.`;
+        
+        if (disponibles === 0) {
+          tagClass = 'danger';
+          tagText = 'Sin stock';
+        } else if (disponibles < total) {
+          tagClass = 'warn';
+        }
+
+        contenedor.innerHTML += `
+          <div class="card book" onclick="verDetalleLibro(${libro.idmaterial})">
+            <div class="cover">${libro.titulo.substring(0, 15)}...</div>
+            <div>
+              <h3>${libro.titulo}</h3>
+              <small>${libro.autor}</small>
+              <div class="stock-indicator">${disponibles}/${total} copias disponibles</div>
+            </div>
+            <span class="tag ${tagClass}">${tagText}</span>
+          </div>
+        `;
+      });
+    }
+
+    function filtrarCatalogoReal() {
+      const texto = document.getElementById('busqueda').value.toLowerCase().trim();
+      const filtrados = librosCargados.filter(libro => 
+        libro.titulo.toLowerCase().includes(texto) || 
+        libro.autor.toLowerCase().includes(texto)
+      );
+      renderizarLibros(filtrados);
+    }
+
+    //   DETALLE LIBRO CON COPIAS   
+    async function verDetalleLibro(idmaterial) {
+      const bloque = document.getElementById('bloque-detalle');
+      bloque.innerHTML = '<p class="loading-msg">Cargando detalle y copias...</p>';
+      showScreen('detail');
+
+      try {
+        const response = await fetch(`/api/material/${idmaterial}/copias`);
+        const data = await response.json();
+
+        if (data.success) {
+          const m = data.material;
+          const copias = data.copias;
+          
+          const disponibles = copias.filter(c => c.estado === 'Disponible').length;
+          
+          bloque.innerHTML = `
+            <div style="text-align:center; margin-bottom:20px;">
+              <div class="cover" style="width:100px;height:140px;margin:0 auto;font-size:14px;">${m.titulo.substring(0, 20)}...</div>
+            </div>
+            <h2 style="text-align:center; margin-bottom:5px;">${m.titulo}</h2>
+            <p style="text-align:center; color:var(--muted); margin-bottom:20px;">${m.autor} • ${m.tipo || 'N/A'}</p>
+            
+            <div class="detail-grid" style="margin-bottom:20px;">
+              <div class="detail-row">
+                <span class="detail-label">Total copias</span>
+                <span class="detail-value">${copias.length}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Disponibles</span>
+                <span class="detail-value" style="color: ${disponibles > 0 ? 'var(--success)' : 'var(--danger)'}">${disponibles}</span>
+              </div>
+            </div>
+
+            <h3 style="color:var(--primary); font-size:14px; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.05em;">Estado de Copias</h3>
+            <div class="copias-list">
+              ${copias.length === 0 ? '<p class="muted" style="text-align:center; padding:15px;">No hay copias registradas</p>' : ''}
+              ${copias.map(c => {
+                const esDisponible = c.estado === 'Disponible';
+                const estadoColor = esDisponible ? 'var(--success)' : (c.estado === 'Reservado' ? 'var(--warning)' : 'var(--danger)');
+                return `
+                  <div class="copia-item">
+                    <div class="copia-info">
+                      <span class="copia-id">#${c.idcopia}</span>
+                      <span class="copia-estado" style="color:${estadoColor}">${c.estado}</span>
+                    </div>
+                    ${esDisponible 
+                      ? `<button class="tag ok clickable" onclick="reservarLibro(${c.idcopia}, ${idmaterial})">Reservar</button>` 
+                      : `<span class="tag disabled">${c.estado}</span>`
+                    }
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        } else {
+          bloque.innerHTML = '<p class="error-msg" style="display:block;">Error al cargar detalle</p>';
+        }
+      } catch (e) {
+        bloque.innerHTML = '<p class="error-msg" style="display:block;">Error de conexión</p>';
+      }
+    }
+
+    //   RESERVAR LIBRO  
+    async function reservarLibro(idcopia, idmaterial) {
+      if (!confirm("¿Confirmas la reserva de esta copia?")) return;
+
+      try {
+        const response = await fetch('/api/resumen_usuario', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idcopia })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert(data.mensaje);
+          // Volver a cargar el detalle para actualizar el estado de las copias
+          if (idmaterial) {
+            verDetalleLibro(idmaterial);
+          } else {
+            librosCargados = [];
+            await cargarResumenBD();
+            showScreen('home');
+          }
+        } else {
+          alert("Error: " + data.error);
+        }
+      } catch (e) {
+        alert("Error de conexión al reservar");
+      }
+    }
+
+    //   MI FICHA   
     async function cargarFichaCompletaBD() {
-      const listaContenedor = document.getElementById('lista-prestamos-reales');
-      listaContenedor.innerHTML = '<p class="muted" style="text-align:center; padding:20px;">Sincronizando con MariaDB...</p>';
+      const contenedor = document.getElementById('lista-prestamos-reales');
+      contenedor.innerHTML = '<p class="loading-msg">Cargando historial...</p>';
 
       try {
         const response = await fetch('/api/mis_prestamos');
         if (response.ok) {
           const prestamos = await response.json();
+          
           document.getElementById('kpi-total-prestamos').innerText = prestamos.length;
-          const vigentes = prestamos.filter(p => p.estado === 'Pendiente' || p.estado === 'Vigente').length;
+          const vigentes = prestamos.filter(p => p.estado === 'Vigente').length;
           document.getElementById('kpi-vigentes').innerText = vigentes;
 
-          listaContenedor.innerHTML = '';
+          contenedor.innerHTML = '';
 
           if (prestamos.length === 0) {
-            listaContenedor.innerHTML = `
-              <div style="text-align:center; padding: 40px 20px;" class="muted">
-                <span style="font-size: 32px;">📭</span>
-                <p style="margin-top:10px; font-size:14px;">No tienes historial de préstamos en nuestra base de datos.</p>
-              </div>`;
-            showScreen('loans');
+            contenedor.innerHTML = '<div class="empty-state"><span>📭</span><p>No tienes préstamos registrados.</p></div>';
             return;
           }
 
           prestamos.forEach(item => {
-            const cardHtml = document.createElement('div');
-            cardHtml.className = 'card book';
             let tagClass = 'ok';
             if (item.estado === 'Atrasado') tagClass = 'danger';
-            if (item.estado === 'Devuelto') tagClass = 'muted';
+            else if (item.estado === 'Devuelto') tagClass = 'disabled';
+            else if (item.estado === 'Reservado') tagClass = 'warn';
 
-            cardHtml.innerHTML = `
-              <div class="cover">${item.titulo.substring(0, 15)}...</div>
-              <div>
-                <h3>${item.titulo}</h3>
-                <small>Copia ID: #00${item.idcopia}<br>Devolución: ${item.fecha_devolucion || 'Sin fecha'}</small>
+            contenedor.innerHTML += `
+              <div class="card book">
+                <div class="cover">${item.titulo.substring(0, 12)}...</div>
+                <div>
+                  <h3>${item.titulo}</h3>
+                  <small>Copia: #${item.idcopia}<br>Dev: ${item.fecha_devolucion || 'Pendiente'}</small>
+                </div>
+                <span class="tag ${tagClass}">${item.estado}</span>
               </div>
-              <span class="tag ${tagClass}">${item.estado}</span>
             `;
-            listaContenedor.appendChild(cardHtml);
           });
         }
-        showScreen('loans');
       } catch (error) {
-        listaContenedor.innerHTML = '<p class="error-msg" style="display:block;">Error al conectar con el historial real.</p>';
-        showScreen('loans');
+        contenedor.innerHTML = '<p class="error-msg" style="display:block;">Error al cargar historial</p>';
       }
     }
 
-    async function cerrarSesion() {
+    //   ADMIN: CATEGORÍAS  
+    async function cargarCategoriasBD() {
+      const tbody = document.getElementById('tabla-categorias-body');
+      tbody.innerHTML = '<tr><td colspan="3" class="loading-msg">Cargando...</td></tr>';
+
       try {
-        await fetch('/api/logout', { method: 'POST' });
-        document.getElementById('input-rut').value = "";
-        document.getElementById('input-password').value = "";
-        mainNav.style.display = "none";
-        showScreen('login');
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-
-
-
-    // Asegúrate de tener la variable global declarada arriba de todo en tus scripts:
-    let librosCargados = [];
-
-    // Dentro del .then(datos => { ... }) de tu resumen de usuario, agrega esto:
-    fetch('/api/resumen_usuario')
-      .then(res => res.json())
-      .then(datos => {
-        // 1. Guardamos los libros que vienen de MariaDB en las variables
-        librosCargados = datos.catalogo_completo || [];
-        localStorage.setItem('catalogo', JSON.stringify(librosCargados));
-
-        // 2. Aquí va el código que ya tenías para rellenar los contadores (préstamos, atrasos, etc.)
-        // Ej: document.getElementById('num-prestamos').innerText = datos.prestamos;
-      })
-      .catch(err => console.error("Error al cargar resumen:", err));
-
-
-    function cargarCatalogoReal() {
-      // Si la variable está vacía, intentamos recuperarla del localStorage por si acaso
-      if (!librosCargados || librosCargados.length === 0) {
-        const localData = localStorage.getItem('catalogo');
-        if (localData) {
-          librosCargados = JSON.parse(localData);
-        }
-      }
-
-      const contenedor = document.getElementById('contenedor-libros'); // Revisa que este ID coincida con tu HTML
-      if (!contenedor) return;
-
-      // Limpiamos por completo el contenedor (aquí muere el libro falso de prueba)
-      contenedor.innerHTML = '';
-
-      // Si la base de datos no devolvió nada, avisamos en pantalla
-      if (librosCargados.length === 0) {
-        contenedor.innerHTML = '<p style="text-align:center; padding:20px;">No hay libros registrados en la base de datos.</p>';
-        return;
-      }
-
-      // Dibujamos cada libro real de MariaDB
-      librosCargados.forEach(libro => {
-        contenedor.innerHTML += `
-          <div class="card book">
-            <div class="cover">📖</div>
-            <div class="book-info">
-              <h3>${libro.titulo}</h3>
-              <p>Autor: ${libro.autor}</p>
-              <small>Código Copia: <b>${libro.idcopia}</b></small>
-            </div>
-            <span class="tag ${libro.estado === 'Disponible' ? 'ok' : 'warn'}">${libro.estado}</span>
-            <button class="tag ok" onclick="reservarLibro(${libro.idcopia})">Reservar</button>
-          </div>
-        `;
-      });
-    }
-
-    // 3. Función encargada de dibujar las tarjetas en tu contenedor
-    function renderizarLibros(lista) {
-      const contenedor = document.getElementById('contenedor-libros');
-      if (!contenedor) return;
-      
-      contenedor.innerHTML = ''; // Limpiamos el contenedor
-
-      if (lista.length === 0) {
-        contenedor.innerHTML = '<p class="muted" style="text-align:center; padding:20px;">No se encontraron libros para tu búsqueda.</p>';
-        return;
-      }
-
-      lista.forEach(libro => {
-        contenedor.innerHTML += `
-          <div class="card book" onclick="verDetalleLibro(${libro.idcopia})">
-            <div class="cover">Libro</div>
-            <div>
-              <h3>${libro.titulo}</h3>
-              <small>Código Copia: <b>${libro.idcopia}</b><br>Autor: ${libro.autor}</small>
-            </div>
-            <span class="tag ok">Ver</span>
-          </div>
-        `;
-      });
-    }
-
-    // 4. Tu buscador en tiempo real (Arreglado para que no falle al escribir)
-    function filtrarCatalogoReal() {
-      const texto = document.getElementById('busqueda').value.toLowerCase().trim();
-      
-      // Filtramos sobre la variable global
-      const filtrados = librosCargados.filter(libro => 
-        libro.titulo.toLowerCase().includes(texto) || 
-        libro.autor.toLowerCase().includes(texto)
-      );
-      
-      renderizarLibros(filtrados);
-    }
-
-
-    function reservarLibro(idcopia) {
-      if (!confirm("¿Estás seguro de que deseas reservar este libro?")) return;
-
-      fetch('/api/resumen_usuario', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ idcopia: idcopia }) // Solo mandamos el ID del libro
-      })
-      .then(res => res.json())
-      .then(data => {
+        const response = await fetch('/api/categorias');
+        const data = await response.json();
+        
         if (data.success) {
-          alert(data.mensaje);
-          location.reload(); 
-        } else {
-          alert("Error: " + data.error);
+          tbody.innerHTML = '';
+          data.categorias.forEach(cat => {
+            const activa = cat.activo === 1;
+            tbody.innerHTML += `
+              <tr>
+                <td>${cat.nombre}</td>
+                <td><span class="tag ${activa ? 'ok' : 'danger'}">${activa ? 'Activo' : 'Inactivo'}</span></td>
+                <td>
+                  <button class="tag ${activa ? 'danger' : 'ok'} clickable" onclick="toggleCategoria(${cat.idtipo})">
+                    ${activa ? 'Desactivar' : 'Activar'}
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
         }
-      });
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="3" class="error-msg" style="display:block;">Error al cargar</td></tr>';
+      }
     }
+
+    async function guardarCategoria() {
+      const nombre = document.getElementById('input-cat-nombre').value.trim();
+      const successDiv = document.getElementById('cat-success');
+      successDiv.style.display = 'none';
+
+      if (!nombre) return alert("Escribe un nombre");
+
+      try {
+        const response = await fetch('/api/categorias', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          successDiv.innerText = data.message;
+          successDiv.style.display = 'block';
+          document.getElementById('input-cat-nombre').value = '';
+          cargarCategoriasBD();
+        } else {
+          alert(data.message);
+        }
+      } catch (e) {
+        alert("Error al guardar");
+      }
+    }
+
+    async function toggleCategoria(idtipo) {
+      try {
+        const response = await fetch(`/api/categorias/${idtipo}/toggle`, { method: 'POST' });
+        const data = await response.json();
+        if (data.success) {
+          cargarCategoriasBD();
+        } else {
+          alert(data.message);
+        }
+      } catch (e) {
+        alert("Error al cambiar estado");
+      }
+    }
+
+    //   ADMIN: RESERVAS  
+    async function cargarReservasAdmin() {
+      const contenedor = document.getElementById('lista-reservas-admin');
+      contenedor.innerHTML = '<p class="loading-msg">Cargando reservas...</p>';
+
+      try {
+        const response = await fetch('/api/admin/ver_reservas');
+        const data = await response.json();
+
+        if (data.success) {
+          if (data.reservas.length === 0) {
+            contenedor.innerHTML = '<div class="empty-state"><span>✅</span><p>No hay reservas pendientes.</p></div>';
+            return;
+          }
+
+          contenedor.innerHTML = '';
+          data.reservas.forEach(r => {
+            contenedor.innerHTML += `
+              <div class="card book">
+                <div class="cover">${r.titulo.substring(0, 12)}...</div>
+                <div>
+                  <h3>${r.titulo}</h3>
+                  <small>${r.alumno}<br>RUT: ${r.rut}<br>${r.fecha_prestamo}</small>
+                </div>
+                <span class="tag ok clickable" onclick="entregarLibro(${r.idprestamo}, ${r.idcopia})">Entregar</span>
+              </div>
+            `;
+          });
+        }
+      } catch (e) {
+        contenedor.innerHTML = '<p class="error-msg" style="display:block;">Error al cargar</p>';
+      }
+    }
+
+    async function entregarLibro(idprestamo, idcopia) {
+      if (!confirm("¿Confirmar entrega de este libro?")) return;
+
+      try {
+        const response = await fetch('/api/admin/entregar_libro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idprestamo, idcopia })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          alert(data.message);
+          cargarReservasAdmin();
+        } else {
+          alert(data.message);
+        }
+      } catch (e) {
+        alert("Error al entregar");
+      }
+    }
+
+    //   ADMIN: INVENTARIO  
+    async function actualizarInventario() {
+      const idcopia = document.getElementById('inv-idcopia').value;
+      const estado = document.getElementById('inv-estado').value;
+      const successDiv = document.getElementById('inv-success');
+      const errorDiv = document.getElementById('inv-error');
+      
+      successDiv.style.display = 'none';
+      errorDiv.style.display = 'none';
+
+      if (!idcopia) {
+        errorDiv.innerText = "Ingresa ID de copia";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/admin/inventario', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idcopia: parseInt(idcopia), estado })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          successDiv.innerText = data.message;
+          successDiv.style.display = 'block';
+          document.getElementById('inv-idcopia').value = '';
+        } else {
+          errorDiv.innerText = data.message;
+          errorDiv.style.display = 'block';
+        }
+      } catch (e) {
+        errorDiv.innerText = "Error de conexión";
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    //   ADMIN: TRANSACCIONES  
+    async function transaccionPrestamo() {
+      const rut = document.getElementById('tx-rut').value.trim();
+      const idcopia = document.getElementById('tx-idcopia').value;
+      const successDiv = document.getElementById('tx-success');
+      const errorDiv = document.getElementById('tx-error');
+      
+      successDiv.style.display = 'none';
+      errorDiv.style.display = 'none';
+
+      if (!rut || !idcopia) {
+        errorDiv.innerText = "Completa RUT y ID Copia";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/admin/transaccion/prestamo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rut, idcopia: parseInt(idcopia) })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          successDiv.innerText = data.message;
+          successDiv.style.display = 'block';
+          document.getElementById('tx-rut').value = '';
+          document.getElementById('tx-idcopia').value = '';
+        } else {
+          errorDiv.innerText = data.message;
+          errorDiv.style.display = 'block';
+        }
+      } catch (e) {
+        errorDiv.innerText = "Error de conexión";
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    async function transaccionDevolucion() {
+      const idcopia = document.getElementById('tx-idcopia').value;
+      const successDiv = document.getElementById('tx-success');
+      const errorDiv = document.getElementById('tx-error');
+      
+      successDiv.style.display = 'none';
+      errorDiv.style.display = 'none';
+
+      if (!idcopia) {
+        errorDiv.innerText = "Ingresa ID Copia";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/admin/transaccion/devolucion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idcopia: parseInt(idcopia) })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          successDiv.innerText = data.message;
+          successDiv.style.display = 'block';
+          document.getElementById('tx-rut').value = '';
+          document.getElementById('tx-idcopia').value = '';
+        } else {
+          errorDiv.innerText = data.message;
+          errorDiv.style.display = 'block';
+        }
+      } catch (e) {
+        errorDiv.innerText = "Error de conexión";
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    //   ADMIN: RANKING  
+    async function cargarRankingBD() {
+      const contenedor = document.getElementById('lista-ranking');
+      contenedor.innerHTML = '<p class="loading-msg">Cargando ranking...</p>';
+
+      try {
+        const response = await fetch('/api/admin/top_materiales');
+        const data = await response.json();
+
+        if (data.success) {
+          if (data.materiales.length === 0) {
+            contenedor.innerHTML = '<div class="empty-state"><span>📊</span><p>No hay datos de préstamos aún.</p></div>';
+            return;
+          }
+
+          contenedor.innerHTML = '';
+          data.materiales.forEach((m, i) => {
+            contenedor.innerHTML += `
+              <div class="card" style="padding:12px; display:flex; justify-content:space-between;">
+                <span>
+                  <strong>${i + 1}. ${m.titulo}</strong>
+                  <br><small class="muted">${m.autor}</small>
+                </span>
+                <span class="tag ok">${m.veces_prestado} veces</span>
+              </div>
+            `;
+          });
+        }
+      } catch (e) {
+        contenedor.innerHTML = '<p class="error-msg" style="display:block;">Error al cargar</p>';
+      }
+    }
+
+    // ENTER PARA LOGIN 
+    document.getElementById('input-password').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') procesarLogin();
+    });
+    document.getElementById('input-rut').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') document.getElementById('input-password').focus();
+    });
   </script>
 </body>
 </html>
