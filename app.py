@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import mysql.connector
+import os
 from mysql.connector import Error
 from datetime import datetime
 
@@ -7,12 +8,12 @@ app = Flask(__name__)
 app.secret_key = 'clave_secreta_desarrollo_duocuc'
 
 
-# CONEXIÓN A BASE DE DATOS
+# BASE DE DATOS
 
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
-            host='127.0.0.1',
+            host=os.environ.get('DB_HOST', '127.0.0.1'),
             user='root',
             password='', 
             database='biblioteca_duoc'
