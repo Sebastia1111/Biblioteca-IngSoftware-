@@ -289,30 +289,30 @@ python app.py
 <table>
 <tr>
 <td align="center">
-<strong>🔐 Login</strong><br>
-<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Login" alt="Login" width="200">
+<strong>Login</strong><br>
+<img src="https://github.com/user-attachments/assets/08a86fa9-0756-470b-a481-10366f0f48c7"?text=Login" alt="Login" width="200">
 </td>
 <td align="center">
-<strong>🏠 Dashboard</strong><br>
-<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Dashboard" alt="Dashboard" width="200">
+<strong>Dashboard</strong><br>
+<img src="https://github.com/user-attachments/assets/634bdd30-578f-4ea8-b520-d68dcd80b8f6"?text=Dashboard" alt="Dashboard" width="200">
 </td>
 <td align="center">
-<strong>🔍 Búsqueda</strong><br>
-<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Busqueda" alt="Búsqueda" width="200">
+<strong>Búsqueda</strong><br>
+<img src="https://github.com/user-attachments/assets/d82145e9-f251-415d-964f-9e4d46502e61"?text=Busqueda" alt="Búsqueda" width="200">
 </td>
 </tr>
 <tr>
 <td align="center">
-<strong>📖 Detalle</strong><br>
-<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Detalle" alt="Detalle" width="200">
+<strong>Detalle</strong><br>
+<img src="https://github.com/user-attachments/assets/5dd2eacc-3b36-4564-a6ea-7f0f4c349d47"?text=Detalle" alt="Detalle" width="200">
 </td>
 <td align="center">
-<strong>📚 Mi Ficha</strong><br>
-<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Mi+Ficha" alt="Mi Ficha" width="200">
+<strong>Mi Ficha</strong><br>
+<img src="https://github.com/user-attachments/assets/d992e0b8-7273-473f-96c9-695b0ede58f8"?text=Mi+Ficha" alt="Mi Ficha" width="200">
 </td>
 <td align="center">
-<strong>⚙️ Admin</strong><br>
-<img src="https://via.placeholder.com/250x500/1A1A1A/FFC20E?text=Admin" alt="Admin" width="200">
+<strong>Admin</strong><br>
+<img src="https://github.com/user-attachments/assets/c907b512-01fd-4740-80c2-2a6e8166d9ab"?text=Admin" alt="Admin" width="200">
 </td>
 </tr>
 </table>
@@ -321,20 +321,20 @@ python app.py
 <table>
 <tr>
 <td align="center">
-<strong>🏠 Dashboard</strong><br>
-<img src="https://via.placeholder.com/500x300/1A1A1A/FFC20E?text=Dashboard+Admin" alt="Dashboard Admin" width="400">
+<strong>Dashboard</strong><br>
+<img src="https://github.com/user-attachments/assets/98ebb8f3-e33d-4c0d-b518-bbf398ed0b21"?text=Dashboard+Admin" alt="Dashboard Admin" width="400">
 </td>
 </tr>
 <tr>
 <td align="center">
-<strong>📦 Inventario</strong><br>
-<img src="https://via.placeholder.com/500x300/1A1A1A/FFC20E?text=CRUD+Materiales" alt="CRUD Materiales" width="400">
+<strong>Inventario</strong><br>
+<img src="https://github.com/user-attachments/assets/a377df57-b2b6-4dd6-90aa-ecfd9624c6f0"?text=CRUD+Materiales" alt="CRUD Materiales" width="400">
 </td>
 </tr>
 <tr>
 <td align="center">
-<strong>📋 Préstamos</strong><br>
-<img src="https://via.placeholder.com/500x300/1A1A1A/FFC20E?text=Historial+Prestamos" alt="Historial Préstamos" width="400">
+<strong>Préstamos</strong><br>
+<img src="https://github.com/user-attachments/assets/8df5a33c-0d75-40fa-9aff-42d5f1a06af2"?text=Historial+Prestamos" alt="Historial Préstamos" width="400">
 </td>
 </tr>
 </table>
