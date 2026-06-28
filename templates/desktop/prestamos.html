@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Préstamos - Biblioteca DuocUC</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .filters-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filters-bar select,
+        .filters-bar input {
+            margin-bottom: 0;
+            width: auto;
+            min-width: 180px;
+        }
+        .filters-bar label {
+            margin-bottom: 0;
+            margin-right: -10px;
+        }
+        .badge-count {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .modal h3 {
+            color: var(--brand-yellow);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .alert-btn {
+            background: rgba(204,0,0,0.1);
+            border: 1px solid var(--brand-red);
+            color: var(--brand-red);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .alert-btn:hover {
+            background: var(--brand-red);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='/'">
+            <span>Biblioteca</span><span>DuocUC</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/catalogo">Inventario</a></li>
+                <li><a href="/prestamos" class="active">Préstamos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Historial Global de Préstamos</h2>
+
+        <div id="mensaje-exito" class="alert alert-success" style="display:none;"></div>
+
+        <div class="filters-bar">
+            <label>Estado:</label>
+            <select id="filtro-estado" onchange="cargarPrestamos()">
+                <option value="">Todos</option>
+                <option value="Vigente">Vigentes</option>
+                <option value="Reservado">Reservados</option>
+                <option value="Atrasado">Atrasados</option>
+                <option value="Devuelto">Devueltos</option>
+            </select>
+            
+            <label>Buscar:</label>
+            <input type="text" id="filtro-busqueda" placeholder="Nombre, RUT o título..." oninput="cargarPrestamos()">
+            
+            <span class="badge-count" id="total-count">Cargando...</span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Alumno</th>
+                    <th>RUT</th>
+                    <th>Material</th>
+                    <th>Fecha Préstamo</th>
+                    <th>Fecha Devolución</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-prestamos">
+                <tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Cargando préstamos...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-overlay" id="modal-alerta">
+        <div class="modal">
+            <h3>🚨 Enviar Alerta de Vencimiento</h3>
+            <div class="form-group">
+                <label>Alumno</label>
+                <input type="text" id="alerta-nombre" readonly>
+            </div>
+            <div class="form-group">
+                <label>Correo</label>
+                <input type="text" id="alerta-correo" readonly>
+            </div>
+            <div class="form-group">
+                <label>Material</label>
+                <input type="text" id="alerta-material" readonly>
+            </div>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:10px;">
+                Se enviará una notificación al correo del alumno solicitando la devolución inmediata.
+            </p>
+            <div class="modal-actions">
+                <button class="btn" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-danger" onclick="enviarAlerta()">Enviar Alerta</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let alertaData = {};
+
+        async function cargarPrestamos() {
+            const tbody = document.getElementById('tabla-prestamos');
+            const filtroEstado = document.getElementById('filtro-estado').value;
+            const filtroBusqueda = document.getElementById('filtro-busqueda').value.toLowerCase().trim();
+                
+            document.getElementById('total-count').innerText = 'Cargando...';
+                
+            try {
+                const response = await fetch('/api/admin/todos_prestamos');
+                const data = await response.json(); // Leer SIEMPRE el body
+            
+                if (!data.success) {
+                    // Mostrar el error REAL que viene del backend
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--brand-red); padding:30px;">
+                        <strong>Error del servidor:</strong><br>${data.message || 'Desconocido'}<br><br>
+                        <small style="color:var(--text-muted);">¿El endpoint /api/admin/todos_prestamos existe en app.py?</small>
+                    </td></tr>`;
+                    document.getElementById('total-count').innerText = 'Error';
+                    return;
+                }
+            
+                let filtrados = data.prestamos;
+            
+                if (filtroEstado) {
+                    filtrados = filtrados.filter(p => p.estado === filtroEstado);
+                }
+                if (filtroBusqueda) {
+                    filtrados = filtrados.filter(p => 
+                        p.alumno.toLowerCase().includes(filtroBusqueda) ||
+                        p.rut.includes(filtroBusqueda) ||
+                        p.titulo.toLowerCase().includes(filtroBusqueda)
+                    );
+                }
+            
+                document.getElementById('total-count').innerText = `${filtrados.length} préstamo(s)`;
+            
+                if (filtrados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No se encontraron préstamos con esos filtros</td></tr>';
+                    return;
+                }
+            
+                tbody.innerHTML = '';
+                filtrados.forEach(p => {
+                    let estadoClass = '';
+                    if (p.estado === 'Atrasado') estadoClass = 'atrasado';
+                    else if (p.estado === 'Vigente') estadoClass = 'vigente';
+                    else if (p.estado === 'Reservado') estadoClass = 'reservado';
+                    else if (p.estado === 'Devuelto') estadoClass = 'devuelto';
+                    
+                    let accionesHtml = '';
+                    if (p.estado === 'Reservado') {
+                        accionesHtml = `<button class="btn btn-sm btn-primary" onclick="entregarLibro(${p.idprestamo}, ${p.idcopia})">Entregar</button>`;
+                    } else if (p.estado === 'Atrasado' || p.estado === 'Vigente') {
+                        accionesHtml = `
+                            <button class="btn btn-sm btn-primary" onclick="registrarDevolucion(${p.idprestamo}, ${p.idcopia})">Devolver</button>
+                            <button class="alert-btn" onclick="abrirModalAlerta('${p.rut}', '${p.alumno}', '${p.titulo}')">⚠️ Alerta</button>
+                        `;
+                    }
+                
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="color:var(--text-muted)">#${p.idprestamo}</td>
+                            <td style="color:white;">${p.alumno}</td>
+                            <td style="color:var(--text-muted)">${p.rut}</td>
+                            <td>${p.titulo}</td>
+                            <td style="color:var(--text-muted)">${p.fecha_prestamo || '-'}</td>
+                            <td style="color:var(--text-muted)">${p.fecha_devolucion || '-'}</td>
+                            <td class="${estadoClass}" style="font-weight:bold;">${p.estado}</td>
+                            <td><div style="display:flex;gap:5px;">${accionesHtml}</div></td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                console.error('Error:', e);
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--brand-red); padding:30px;">
+                    <strong>Error de conexión</strong><br><span style="color:var(--text-muted);">¿Está corriendo Flask? ¿Existe el endpoint?</span><br>
+                    <code style="font-size:11px; margin-top:10px; display:block;">${e.message}</code>
+                </td></tr>`;
+            }
+        }
+
+        async function entregarLibro(idprestamo, idcopia) {
+            if (!confirm("¿Confirmar entrega de este libro?")) return;
+
+            try {
+                const response = await fetch('/api/admin/entregar_libro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idprestamo, idcopia })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    mostrarExito(data.message);
+                    cargarPrestamos();
+                } else {
+                    alert(data.message);
+                }
+            } catch (e) {
+                alert("Error al entregar");
+            }
+        }
+
+        async function registrarDevolucion(idprestamo, idcopia) {
+            if (!confirm("¿Confirmar devolución de este libro?")) return;
+
+            try {
+                const response = await fetch('/api/admin/transaccion/devolucion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idcopia })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    mostrarExito(data.message);
+                    cargarPrestamos();
+                } else {
+                    alert(data.message);
+                }
+            } catch (e) {
+                alert("Error al registrar devolución");
+            }
+        }
+
+        function abrirModalAlerta(rut, nombre, titulo) {
+            alertaData = { rut, titulo };
+            document.getElementById('alerta-nombre').value = nombre;
+            document.getElementById('alerta-material').value = titulo;
+            document.getElementById('alerta-correo').value = 'Cargando...';
+            
+            fetch(`/api/usuario/${rut}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('alerta-correo').value = data.usuario.correo;
+                    } else {
+                        document.getElementById('alerta-correo').value = 'No encontrado';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('alerta-correo').value = 'Error al cargar correo';
+                });
+
+            document.getElementById('modal-alerta').classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-alerta').classList.remove('active');
+        }
+
+        async function enviarAlerta() {
+            try {
+                const response = await fetch('/api/simular_alerta_vencimiento', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(alertaData)
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    cerrarModal();
+                    mostrarExito(data.message);
+                } else {
+                    alert(data.message);
+                }
+            } catch (e) {
+                alert("Error al enviar alerta");
+            }
+        }
+
+        function mostrarExito(mensaje) {
+            const div = document.getElementById('mensaje-exito');
+            div.innerText = mensaje;
+            div.style.display = 'block';
+            setTimeout(() => div.style.display = 'none', 4000);
+        }
+
+        document.getElementById('modal-alerta').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+
+        // Cargar al inicio
+        cargarPrestamos();
+    </script>
+</body>
+</html>
