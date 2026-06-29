@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # 1. La base de datos
+  db:
+    image: mariadb:11
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "" 
+      MYSQL_DATABASE: biblioteca_duoc
+    ports:
+      - "3306:3306"
+    volumes:
+      # Esto hace que tu carpeta /database se ejecute solo al iniciar
+      - ./database:/docker-entrypoint-initdb.d
+
+  # 2. Tu aplicación de Python
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      # Le dice a Flask que busque la base de datos en la caja "db"
+      - DB_HOST=db
