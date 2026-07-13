@@ -1,0 +1,12 @@
+Task,Start,End,Duration (days),Dependencies,Responsible,Notes
+Setup local & run,2026-07-13,2026-07-13,1,,Dev,Instalar dependencias y ejecutar la app localmente
+DB schema & seed,2026-07-14,2026-07-15,2,Setup,Dev,Validar database/schema.sql e insertar datos de prueba (inserts.sql)
+Backend endpoints & limpieza,2026-07-16,2026-07-24,7,DB,Dev,Refactor rutas/API, login, préstamos, validaciones
+Frontend - Desktop,2026-07-27,2026-07-31,5,Backend,Dev,Actualizar templates/desktop (index/catalogo/prestamos)
+Frontend - CSS / assets,2026-07-27,2026-07-29,3,Backend,Dev,Mejoras en static/css/style.css y assets
+Frontend - Mobile / responsive,2026-08-03,2026-08-06,4,Frontend - Desktop,Dev,Adaptar templates para mobile / responsive
+Docker & compose tests,2026-07-30,2026-07-31,2,Frontend - CSS,Dev,Construir imagenes y probar docker-compose
+Tests unitarios e integración,2026-08-03,2026-08-07,5,Frontend - Desktop,Dev,Suite básica (endpoints, flujos principales)
+Documentación & README,2026-08-10,2026-08-11,2,Tests,Dev,Actualizar README con pasos de run, variables de entorno y API
+Deploy (VPS / Docker),2026-08-12,2026-08-13,2,Documentation;Docker,Dev,Desplegar mediante docker-compose en VPS de prueba
+Buffer y correcciones,2026-08-14,2026-08-18,3,Deploy,Dev,Corrección de bugs, ajustes de seguridad y limpieza final
