@@ -45,6 +45,62 @@
             width: 300px;
             margin-bottom: 0;
         }
+        .two-columns-admin {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .cat-mini-list {
+            margin-top: 15px;
+        }
+        .cat-mini-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .cat-mini-item .cat-name {
+            color: var(--brand-white);
+            font-weight: 500;
+        }
+        .cat-mini-item .cat-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .cat-status {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        .cat-status.active { background: rgba(76,175,80,0.15); color: #4CAF50; }
+        .cat-status.inactive { background: rgba(204,0,0,0.15); color: var(--brand-red); }
+        .cat-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+        .cat-btn:hover {
+            border-color: var(--brand-red);
+            color: var(--brand-red);
+        }
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 30px 0;
+        }
     </style>
 </head>
 <body>
@@ -68,41 +124,63 @@
         <div id="mensaje-exito" class="alert alert-success"></div>
         <div id="mensaje-error" class="alert alert-error" style="display:none;"></div>
 
-        <!-- Formulario -->
-        <div class="form-card">
-            <h3 id="form-title">Registrar Nuevo Material</h3>
-            <form id="form-material">
-                <input type="hidden" id="mat-id">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Título del Material</label>
-                        <input type="text" id="mat-titulo" placeholder="Ej: Física Universitaria" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Autor</label>
-                        <input type="text" id="mat-autor" placeholder="Ej: Serway" required>
-                    </div>
+        <!-- DOS COLUMNAS: Categorías + Formulario Material -->
+        <div class="two-columns-admin">
+            
+            <!-- COLUMNA IZQUIERDA: Gestión de Categorías -->
+            <div class="form-card">
+                <h3>🗂️ Categorías de Material</h3>
+                
+                <div class="form-group">
+                    <label>Nueva Categoría</label>
+                    <input type="text" id="input-cat-nombre" placeholder="Ej: Material Digital">
                 </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Tipo</label>
-                        <select id="mat-tipo">
-                            <option value="1">Libro</option>
-                            <option value="2">Revista</option>
-                            <option value="3">Tesis</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Stock (Copias Físicas)</label>
-                        <input type="number" id="mat-stock" min="1" value="1" required>
-                    </div>
+                <div class="form-actions" style="justify-content: flex-start;">
+                    <button class="btn btn-primary btn-sm" onclick="guardarCategoria()">+ Agregar</button>
                 </div>
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="limpiarForm()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Material</button>
+
+                <div class="cat-mini-list" id="lista-categorias">
+                    <p style="color:var(--text-muted); font-size:0.85rem;">Cargando categorías...</p>
                 </div>
-            </form>
+            </div>
+
+            <!-- COLUMNA DERECHA: Formulario Material -->
+            <div class="form-card">
+                <h3 id="form-title">Registrar Nuevo Material</h3>
+                <form id="form-material">
+                    <input type="hidden" id="mat-id">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Título del Material</label>
+                            <input type="text" id="mat-titulo" placeholder="Ej: Física Universitaria" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Autor</label>
+                            <input type="text" id="mat-autor" placeholder="Ej: Serway" required>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tipo / Categoría</label>
+                            <!-- ESTE SELECT SE LLENA DINÁMICAMENTE DESDE LA BD -->
+                            <select id="mat-tipo">
+                                <option value="">Cargando...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Stock (Copias Físicas)</label>
+                            <input type="number" id="mat-stock" min="1" value="1" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="limpiarForm()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Material</button>
+                    </div>
+                </form>
+            </div>
         </div>
+
+        <hr class="section-divider">
 
         <!-- Filtro -->
         <div class="filter-bar">
@@ -130,8 +208,108 @@
 
     <script>
         let materialesOriginales = [];
+        let categoriasOriginales = [];
 
-        // CARGAR MATERIALES
+        // ==================== CARGAR CATEGORÍAS (Select + Lista) ====================
+        async function cargarCategorias() {
+            try {
+                const response = await fetch('/api/categorias');
+                const data = await response.json();
+                
+                if (data.success) {
+                    categoriasOriginales = data.categorias;
+                    
+                    // 1. Llenar el SELECT del formulario de materiales
+                    const selectTipo = document.getElementById('mat-tipo');
+                    const valorActual = selectTipo.value; // Guardar lo que tenía seleccionado
+                    selectTipo.innerHTML = '';
+                    
+                    data.categorias.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.idtipo;
+                        option.textContent = cat.nombre + (cat.activo === 0 ? ' (Inactivo)' : '');
+                        // Si la categoría está inactiva, la marcamos pero no bloqueamos
+                        selectTipo.appendChild(option);
+                    });
+                    
+                    // Restaurar la selección si había una
+                    if (valorActual) selectTipo.value = valorActual;
+
+                    // 2. Llenar la lista visual de la columna izquierda
+                    const listaDiv = document.getElementById('lista-categorias');
+                    
+                    if (data.categorias.length === 0) {
+                        listaDiv.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">No hay categorías</p>';
+                        return;
+                    }
+                    
+                    listaDiv.innerHTML = '';
+                    data.categorias.forEach(cat => {
+                        const activa = cat.activo === 1;
+                        listaDiv.innerHTML += `
+                            <div class="cat-mini-item">
+                                <span class="cat-name">${cat.nombre}</span>
+                                <div class="cat-actions">
+                                    <span class="cat-status ${activa ? 'active' : 'inactive'}">${activa ? 'Activo' : 'Inactivo'}</span>
+                                    <button class="cat-btn" onclick="toggleCategoria(${cat.idtipo})" title="${activa ? 'Desactivar' : 'Activar'}">
+                                        ${activa ? '✕' : '✓'}
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (e) {
+                console.error("Error cargando categorías:", e);
+            }
+        }
+
+        // ==================== GUARDAR CATEGORÍA ====================
+        async function guardarCategoria() {
+            const nombre = document.getElementById('input-cat-nombre').value.trim();
+            if (!nombre) {
+                mostrarError("Escribe un nombre para la categoría");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/categorias', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    mostrarExito(data.message);
+                    document.getElementById('input-cat-nombre').value = '';
+                    // Recargar categorías actualiza el select automáticamente
+                    cargarCategorias();
+                } else {
+                    mostrarError(data.message);
+                }
+            } catch (e) {
+                mostrarError("Error de conexión");
+            }
+        }
+
+        // ==================== ACTIVAR/DESACTIVAR CATEGORÍA ====================
+        async function toggleCategoria(idtipo) {
+            try {
+                const response = await fetch(`/api/categorias/${idtipo}/toggle`, { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    mostrarExito(data.message);
+                    cargarCategorias();
+                } else {
+                    mostrarError(data.message);
+                }
+            } catch (e) {
+                mostrarError("Error al cambiar estado");
+            }
+        }
+
+        // ==================== CARGAR MATERIALES ====================
         async function cargarMateriales() {
             const tbody = document.getElementById('tabla-body');
             const filtro = document.getElementById('filtro-titulo').value.toLowerCase().trim();
@@ -143,7 +321,6 @@
                 if (data.success) {
                     materialesOriginales = data.materiales;
                     
-                    // Filtrar
                     let filtrados = data.materiales;
                     if (filtro) {
                         filtrados = data.materiales.filter(m => 
@@ -193,12 +370,13 @@
             }
         }
 
-        // FORMULARIO
+        // ==================== FORMULARIO MATERIAL ====================
         function limpiarForm() {
             document.getElementById('form-material').reset();
             document.getElementById('mat-id').value = '';
             document.getElementById('form-title').innerText = 'Registrar Nuevo Material';
             document.getElementById('mat-stock').disabled = false;
+            document.getElementById('mat-stock').value = 1;
             ocultarMensajes();
         }
 
@@ -252,18 +430,21 @@
                 return;
             }
 
+            if (!payload.idtipo) {
+                mostrarError("Selecciona una categoría");
+                return;
+            }
+
             try {
                 let response;
                 
                 if (id) {
-                    // EDITAR
                     response = await fetch(`/api/material/${id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
                 } else {
-                    // CREAR
                     response = await fetch('/api/material', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -285,7 +466,7 @@
             }
         });
 
-        // MENSAJES 
+        // ==================== MENSAJES ====================
         function mostrarExito(mensaje) {
             document.getElementById('mensaje-exito').innerText = mensaje;
             document.getElementById('mensaje-exito').style.display = 'block';
@@ -304,7 +485,8 @@
             document.getElementById('mensaje-error').style.display = 'none';
         }
 
-        // Cargar al inicio
+        // ==================== INICIO: Cargar todo al abrir ====================
+        cargarCategorias();
         cargarMateriales();
     </script>
 </body>
