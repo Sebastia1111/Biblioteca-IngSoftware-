@@ -2,6 +2,7 @@ Task,Start,End,Duration (days),Dependencies,Responsible,Notes
 Setup local & run,2026-07-13,2026-07-13,1,,Dev,Instalar dependencias y ejecutar la app localmente
 DB schema & seed,2026-07-14,2026-07-15,2,Setup,Dev,Validar database/schema.sql e insertar datos de prueba (inserts.sql)
 Backend endpoints & limpieza,2026-07-16,2026-07-24,7,DB,Dev,Refactor rutas/API, login, préstamos, validaciones
+Mejoras en inventario - Categorías y materiales,2026-07-25,2026-07-26,2,Backend,Dev,Implementación de nuevas categorías y tipos de materiales en el inventario
 Frontend - Desktop,2026-07-27,2026-07-31,5,Backend,Dev,Actualizar templates/desktop (index/catalogo/prestamos)
 Frontend - CSS / assets,2026-07-27,2026-07-29,3,Backend,Dev,Mejoras en static/css/style.css y assets
 Frontend - Mobile / responsive,2026-08-03,2026-08-06,4,Frontend - Desktop,Dev,Adaptar templates para mobile / responsive
